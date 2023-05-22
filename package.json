@@ -1,0 +1,33 @@
+{
+  "name": "tesis1",
+  "version": "1.0.0",
+  "description": "Monitoreo y seguridad",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "esp8266",
+    "dth",
+    "ldr",
+    "pir",
+    "websocket",
+    "nodejs"
+  ],
+  "author": "Jesus Sebastian Huamanculi Casavilca",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^7.2.0",
+    "node-cron": "^3.0.2",
+    "socket.io": "^4.6.1",
+    "validator": "^13.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
