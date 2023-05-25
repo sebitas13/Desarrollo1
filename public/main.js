@@ -17,7 +17,7 @@ socket.on('lecturas', (value)=> {
             hume,
             s_ter,
             ldr,
-            pir,
+           // pir,
             Fecha} = JSON.parse(value);
     
     temp.innerHTML= temp_c + ' °C';
@@ -25,8 +25,24 @@ socket.on('lecturas', (value)=> {
     hum.innerHTML = hume +' %';
     st.innerHTML = s_ter +' °';
     ld.innerHTML = ldr +' LUX';
-    p.innerHTML = pir;
+   // p.innerHTML = pir;
     f.innerHTML = Fecha;
+
+    //socket.emit('enviame',"otra");
+})
+
+socket.on('lecturas2', (value)=> {
+
+    console.log(value);
+
+    const {
+            
+            pir
+            } = JSON.parse(value);
+    
+    
+    p.innerHTML = pir;
+    //f.innerHTML = Fecha;
 
     //socket.emit('enviame',"otra");
 })

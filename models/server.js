@@ -64,10 +64,19 @@ class Servidor {
             })
 
             socket.on('message',(message)=>{
-                console.log(message);
+                //message['Fecha'] = (new Date().toLocaleString("es-MX", {timeZone: "America/Lima"})); //para el deploy
                 message['Fecha'] = (new Date().toLocaleString());
                socket.broadcast.emit('lecturas', JSON.stringify(message));
                 //socket.broadcast.emit('lecturas', message);
+                console.log('Desde esp8266: '+JSON.stringify(message));
+            })
+
+            socket.on('message2',(message)=>{
+                
+                //message['Fecha'] = (new Date().toLocaleString());
+                socket.broadcast.emit('lecturas2', JSON.stringify(message));
+                //socket.broadcast.emit('lecturas', message);
+                console.log('Desde esp32cam:' +JSON.stringify(message));
             })
 
 
