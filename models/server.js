@@ -57,8 +57,8 @@ class Servidor {
     sockets(){
         let buttonState = false;
         this.io.on('connection',(socket)=>{
-            console.log('Cliente conectado');
-                
+            console.log(`Conectado con el cliente ${socket.id}`)
+                    
             socket.on('disconnect',()=>{
                 console.log('Cliente desconectado');
             })
@@ -82,10 +82,26 @@ class Servidor {
 
             //Logica del boton
 
+
             socket.on('buttonState', value => {
                 console.log('buttonState:', value);
-                buttonState = value;
+                //buttonState = value;
                 socket.broadcast.emit('buttonState', value);
+            });
+
+
+            socket.on('buttonState2', value => {
+                console.log('buttonState2:', value);
+                //buttonState = value;
+                socket.broadcast.emit('buttonState2', value);
+            });
+
+
+            //Stream
+
+            socket.on('stream_event', function(msg){
+                //console.log("imagen recibida del esp32cam")
+                socket.broadcast.emit('stream_to_client',msg.pic)
             });
             
             
