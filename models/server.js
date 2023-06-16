@@ -3,6 +3,7 @@ const express = require('express');
 const {createServer} = require('http');
 const {Server} = require('socket.io');
 const cors = require('cors');
+
 var cron = require('node-cron');
 
 const {Database} = require('../database/config');
@@ -30,7 +31,7 @@ class Servidor {
         
         this._usuariosPath = '/api/usuarios'
         
-        //this.conexionDB();
+        this.conexionDB();
         this.middlewares();
         this.routes();
 
@@ -51,7 +52,7 @@ class Servidor {
     }
 
     routes(){
-
+        this.app.use(this._usuariosPath,require('../routes/usuario.router'))
     }
 
     sockets(){
