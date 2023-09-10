@@ -1,140 +1,95 @@
-
-const express = require('express');
-const {createServer} = require('http');
-const {Server} = require('socket.io');
-const cors = require('cors');
-
-var cron = require('node-cron');
-
-const {Database} = require('../database/config');
-
+const express = require("express");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const cors = require("cors");
+var cron = require("node-cron");
+const { Database } = require("../database/config");
 
 class Servidor {
+  constructor() {
+    this.app = express();
+    this.port = process.env.PORT;
+    this.server = createServer(this.app);
+    this.io = new Server(this.server, { cors: { origin: "*" } });
+    this._usuariosPath = "/api/usuarios";
 
+    // this.conexionDB();
+    this.middlewares();
+    this.routes();
+    this.sockets();
+  }
 
-    constructor(){
-        //Creamos una función de controlador de solicitudes
-        //Diseñada específicamente para ser un oyente de solicitud http 
-        //al que se le pasan los argumentos (req, res)de una solicitud http entrante
-        this.app = express();
-        //Esteblecemos el puerto a partir de las variables de entorno
-        this.port = process.env.PORT;
-        //CreateServer recibe la funcion requestlistener el cual se va llamar cada vez que el servidor reciba una solicitud
-        //En este caso le enviamos nuestro app de express
-        this.server = createServer(this.app); //retorna una instancia de http server
+  conexionDB() {
+    new Database();
+  }
 
-        this.io = new Server(this.server,{cors : {origin : '*'}});
+  middlewares() {
+    this.app.use(express.json());
+    this.app.use(cors());
+    this.app.use(express.static("public"));
+  }
 
-      
+  routes() {
+    this.app.use(this._usuariosPath, require("../routes/usuario.router"));
+  }
 
-        
-        
-        this._usuariosPath = '/api/usuarios'
-        
-        this.conexionDB();
-        this.middlewares();
-        this.routes();
+  sockets() {
+    let buttonState = false;
+    this.io.on("connection", (socket) => {
+      console.log(`Conectado con el cliente ${socket.id}`);
 
-        this.sockets();
-        
-    }
+      socket.on("disconnect", () => {
+        console.log("Cliente desconectado");
+      });
 
-    conexionDB(){
-        new Database();
-    }
+      socket.on("message", (message) => {
+        //message['Fecha'] = (new Date().toLocaleString("es-MX", {timeZone: "America/Lima"})); //para el deploy
+        message["Fecha"] = new Date().toLocaleString();
+        socket.broadcast.emit("lecturas", JSON.stringify(message));
+        console.log("Desde esp8266: " + JSON.stringify(message));
+      });
 
-    middlewares(){
+      socket.on("message2", (message) => {
+        socket.broadcast.emit("lecturas2", JSON.stringify(message));
+        console.log("Desde esp32cam:" + JSON.stringify(message));
+      });
 
-        this.app.use(express.json());
-        this.app.use(cors());
-        this.app.use(express.static('public'));
+      //Logica del boton
+      socket.on("buttonState", (value) => {
+        socket.broadcast.emit("buttonState", value);
+      });
+      socket.on("buttonState2", (value) => {
+        socket.broadcast.emit("buttonState2", value);
+      });
 
-    }
+      //Stream
+      socket.on("stream_event", function (msg) {
+        socket.broadcast.emit("stream_to_client", msg.pic);
+      });
+    });
+  }
 
-    routes(){
-        this.app.use(this._usuariosPath,require('../routes/usuario.router'))
-    }
-
-    sockets(){
-        let buttonState = false;
-        this.io.on('connection',(socket)=>{
-            console.log(`Conectado con el cliente ${socket.id}`)
-                    
-            socket.on('disconnect',()=>{
-                console.log('Cliente desconectado');
-            })
-
-            socket.on('message',(message)=>{
-                //message['Fecha'] = (new Date().toLocaleString("es-MX", {timeZone: "America/Lima"})); //para el deploy
-                message['Fecha'] = (new Date().toLocaleString());
-               socket.broadcast.emit('lecturas', JSON.stringify(message));
-                //socket.broadcast.emit('lecturas', message);
-                console.log('Desde esp8266: '+JSON.stringify(message));
-            })
-
-            socket.on('message2',(message)=>{
-                
-                //message['Fecha'] = (new Date().toLocaleString());
-                socket.broadcast.emit('lecturas2', JSON.stringify(message));
-                //socket.broadcast.emit('lecturas', message);
-                console.log('Desde esp32cam:' +JSON.stringify(message));
-            })
-
-
-            //Logica del boton
-
-
-            socket.on('buttonState', value => {
-                console.log('buttonState:', value);
-                //buttonState = value;
-                socket.broadcast.emit('buttonState', value);
-            });
-
-
-            socket.on('buttonState2', value => {
-                console.log('buttonState2:', value);
-                //buttonState = value;
-                socket.broadcast.emit('buttonState2', value);
-            });
-
-
-            //Stream
-
-            socket.on('stream_event', function(msg){
-                //console.log("imagen recibida del esp32cam")
-                socket.broadcast.emit('stream_to_client',msg.pic)
-            });
-            
-            
-            //Simulacion de envio de entrada de sensores
-            // cron.schedule("*/5 * * * * *", ()=>{
-            //     console.log('Enviando tarea programada');
-            //     socket.emit('lecturas',{
-            //         temperatura : Math.floor(Math.random() * (100 - 10) + 10),
-            //         temperaturaF: Math.floor(Math.random() * (100 - 10) + 10),
-            //         humedad :  Math.floor(Math.random() * (100 - 10) + 10),
-            //         SensacionTermica :  Math.floor(Math.random() * (100 - 10) + 10),
-            //         LDR :  Math.floor(Math.random() * (100 - 10) + 10),
-            //         PIR :  Math.floor(Math.random() * (100 - 10) + 10),
-            //         Fecha :  (new Date().toLocaleString())
-            //     });
-            // });
-                
-        })
-        
-    }
-
-    listen(){
-        this.server.listen(this.port,()=>{
-            console.log(`${(new Date())} escuchando en el puerto ${this.port}`);
-        })
-    }
-
+  listen() {
+    this.server.listen(this.port, () => {
+      console.log(`${new Date()} escuchando en el puerto ${this.port}`);
+    });
+  }
 }
-
 
 module.exports = {
-    Servidor
-}
+  Servidor,
+};
 
-
+//Simulacion de envio de entrada de sensores
+// cron.schedule("*/5 * * * * *", ()=>{
+//     console.log('Enviando tarea programada');
+//     socket.emit('lecturas',{
+//         temperatura : Math.floor(Math.random() * (100 - 10) + 10),
+//         temperaturaF: Math.floor(Math.random() * (100 - 10) + 10),
+//         humedad :  Math.floor(Math.random() * (100 - 10) + 10),
+//         SensacionTermica :  Math.floor(Math.random() * (100 - 10) + 10),
+//         LDR :  Math.floor(Math.random() * (100 - 10) + 10),
+//         PIR :  Math.floor(Math.random() * (100 - 10) + 10),
+//         Fecha :  (new Date().toLocaleString())
+//     });
+// });

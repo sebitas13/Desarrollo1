@@ -197,9 +197,6 @@ const usuario_login = async (req=query,res=response) => {
         })
     }
 
-    
-
-
 }
 
 
