@@ -33,7 +33,7 @@ const usuarioGet = async (req=query,res=response) => {
 const usuarioPost = async (req=query,res=response) => {
 
     const {nombre,correo,password} = req.body;
-
+    
     try {
         const usuario = new Usuario({
             nombre : nombre,

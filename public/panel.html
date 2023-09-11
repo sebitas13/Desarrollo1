@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor de temperatura</title>
+    <link rel='stylesheet' href='https://unpkg.com/bulma@0.9.1/css/bulma.min.css'>
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <section id='app' class='hero is-link is-fullheight'>
+        <div class='hero-body'>
+            <div class='container'>
+
+                <div class='columns has-text-centered'>
+                    <div class='column'>
+                        <h1 style='font-size: 2.5rem'>Paramtros Ambientales</h1>
+                        <i class='fa fa-thermometer-half' style='font-size: 4rem;'></i>
+                    </div>
+                </div>
+
+
+                <div class='columns has-text-centered'>
+                    <div class='column has-text-centered'>
+                        <h2 class='is-size-4 has-text-warning'>Temperatura</h2>
+                        <h2 id="temperatura" class='is-size-2'value=133 >__</h2>
+                    </div>
+                    <div class='column has-text-centered'>
+                        <h2 class='is-size-4 has-text-warning'>Temperatura F</h2>
+                        <h2 id="temperaturaF" class='is-size-2'>__</h2>
+                    </div>
+                    <div class='column has-text-centered'>
+                        <h2 class='is-size-4 has-text-warning'>Humedad</h2>
+                        <h2 id="humedad" class='is-size-2'>__</h2>
+                    </div>
+                    <div class='column has-text-centered'>
+                        <h2 class='is-size-4 has-text-warning'>SensacionTermica</h2>
+                        <h2 id="ST" class='is-size-2'>__</h2>
+                    </div>
+                    <div class='column has-text-centered'>
+                        <h2 class='is-size-4 has-text-warning'>LDR</h2>
+                        <h2 id="LDR" class='is-size-2'>__</h2>
+                    </div>
+                    <!-- <div class='column has-text-centered'>
+                        <h2 class='is-size-4 has-text-warning'>PIR</h2>
+                        <h2 id="PIR" class='is-size-2'>__</h2>
+                    </div> -->
+                    <div class='column has-text-centered'>
+                        <h2 class='is-size-4 has-text-warning'>FECHA</h2>
+                        <h2 id="FECHA" class='is-size-2'>__</h2>
+                    </div>
+                </div>
+
+
+
+
+
+                
+                <div class='columns has-text-centered'>
+                    <div class='column'>
+                        <p>Última lectura: Hace <strong class='has-text-white'>3</strong> segundo(s)</p>
+                        <p class='is-size-5'><i class='fa fa-code'></i> con <i class='fa fa-heart has-text-danger'></i>
+                            por <a target='_blank' class='has-text-warning'
+                                href=''>Sebas</a></p>
+                    </div>
+                  
+                </div>
+
+                <div class='columns has-text-centered'>
+                    <div class='column'>
+                         <strong class='has-text-white'>ENCENDER CAMARA</strong>
+                    </div>
+                  
+                </div>
+
+                <div class='columns has-text-centered'>
+                    <div class='column'>
+                        <button id="toggleBtn">Button</button>
+                    </div>
+                  
+                </div>
+
+            </div>
+
+
+        </div>
+        <!-- STREAM -->
+        <div class="page_display">
+            <div class="page_title"><h1 class="tcenter" style='font-size: 2.5rem'>Camara</h1></div>
+            <div class="tcenter">
+                <canvas id="canvas">
+    
+                </canvas>
+            </div>
+        </div>
+
+        
+        <div class='columns has-text-centered'>
+            <div class='column'>
+                 <strong class='has-text-white'>INICIAR MONITOREO</strong>
+            </div>
+          
+        </div>
+
+        <div class='columns has-text-centered'>
+            <div class='column'>
+                <button id="toggleBtn2">Button</button>
+            </div>
+          
+        </div>
+    </section>
+
+    <script src="main.js"></script>
+</body>
+</html>

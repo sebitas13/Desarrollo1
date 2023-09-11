@@ -3,7 +3,7 @@ const express = require('express');
 const {createServer} = require('http');
 const {Server} = require('socket.io');
 const cors = require('cors');
-
+const bodyParser = require('body-parser');
 var cron = require('node-cron');
 
 const {Database} = require('../database/config');
@@ -45,7 +45,9 @@ class Servidor {
 
     middlewares(){
 
-        this.app.use(express.json());
+        //this.app.use(bodyParser.urlencoded({ extended: false })) //ya no es neceario el body-parser
+        this.app.use(express.urlencoded({ extended: true })); //Middleware para analizar datos de formularios codificados
+        this.app.use(express.json()); //para analizar el cuerpo de las solicitudes entrantes en formato JSON
         this.app.use(cors());
         this.app.use(express.static('public'));
 
@@ -106,19 +108,19 @@ class Servidor {
             });
             
             
-            //Simulacion de envio de entrada de sensores
-            // cron.schedule("*/5 * * * * *", ()=>{
-            //     console.log('Enviando tarea programada');
-            //     socket.emit('lecturas',{
-            //         temperatura : Math.floor(Math.random() * (100 - 10) + 10),
-            //         temperaturaF: Math.floor(Math.random() * (100 - 10) + 10),
-            //         humedad :  Math.floor(Math.random() * (100 - 10) + 10),
-            //         SensacionTermica :  Math.floor(Math.random() * (100 - 10) + 10),
-            //         LDR :  Math.floor(Math.random() * (100 - 10) + 10),
-            //         PIR :  Math.floor(Math.random() * (100 - 10) + 10),
-            //         Fecha :  (new Date().toLocaleString())
-            //     });
-            // });
+            // Simulacion de envio de entrada de sensores
+            cron.schedule("*/5 * * * * *", ()=>{
+                console.log('Enviando tarea programada');
+                socket.emit('lecturas',JSON.stringify({
+                    temp_c : Math.floor(Math.random() * (100 - 10) + 10),
+                    temp_f: Math.floor(Math.random() * (100 - 10) + 10),
+                    hume :  Math.floor(Math.random() * (100 - 10) + 10),
+                    s_ter :  Math.floor(Math.random() * (100 - 10) + 10),
+                    ldr :  Math.floor(Math.random() * (100 - 10) + 10),
+                    pir :  Math.floor(Math.random() * (100 - 10) + 10),
+                    Fecha :  (new Date().toLocaleString())
+                }));
+            });
                 
         })
         

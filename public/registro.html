@@ -4,67 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Login</title>
+    <title>Registro</title>
 </head>
 <body>
     <main>
         <div class="container-middle">
-            <form action="#" id="formulario">
+            <form id="formulario">
                 <div class="imagen">
                     <img src="images/logo2.jpg" id="imagenFormulario" alt="">
                 </div>
-                <label for="correo" ><p>Correo:</p> <input type="email" id="correo" placeholder="admin@gmail.com" name="correo"></label>
+                <label for="nombre" ><p>Usuario:</p> <input type="text" id="nombre" placeholder="..." name="nombre"></label>
+                <label for="correo" ><p>Correo:</p> <input type="email" id="correo" placeholder="..." name="correo"></label>
                 <label for="password" ><p>Contraseña:</p> <input type="password" id="password" placeholder="..." name="password"></label>
                 
-                <button type="submit" id="btnAgregar"><p>Login</p></button>
-                <div class="boton"><a href="registro.html">Registrarse</a></div>
+                <button type="submit" id="btnAgregar"><p>Registrar</p></button>
+                <div class="boton"><a href="index.html">login</a></div>
             </form>
         </div>
     </main>
 
     <script>
         let formulario = document.querySelector('#formulario');
-        formulario.addEventListener('submit',login);
+        formulario.addEventListener('submit',enviarDatos);
 
-        async function login(e){
+        async function enviarDatos(e){
             e.preventDefault();
+            const nombre = document.querySelector('#nombre').value;
             const correo = document.querySelector('#correo').value;
             const password = document.querySelector('#password').value;
 
-            if (!correo || !password) {
+            if (!nombre || !correo || !password) {
                 alert('Todos los campos deben estar completos.')
                 return;
             }
 
             const data = {
-                correo : correo,
-                password : password
-            }
+                nombre: nombre,
+                correo: correo,
+                password: password
+            };
 
-            fetch('/api/usuarios/login',{
-                method : 'POST',
-                headers : {
+            //const formData = new FormData(this);
+            
+            fetch('/api/usuarios',{
+                method: 'POST',
+                headers: {
                     'Content-Type': 'application/json'
                 },
-                body : JSON.stringify(data)
+                body: JSON.stringify(data)
             })
             .then(response => response.json())
             .then(respuesta=>{
-                const token = respuesta.token;
-                localStorage.setItem('token',token);
                 if(respuesta.success){
-                    alert('Bienvenido');
-                    window.location.href = 'menu.html';
+                    alert('Registro exitoso');
+                    window.location.href = 'index.html';
                 }else{
-                    alert('Ocurrio un error en el login')
+                    alert('Ocurrio un error en el registro')
                 }
             })
             .catch(error=>{
                 console.error(error);
             })
         }
+
+        // /api/usuarios
     </script>
 </body>
 </html>
-
 

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="menu.css">
+    <title>Menu principal</title>
+</head>
+<body>
+    <header>
+        <ul class="menu">
+           <a href="menu.html" class="logo-home"> <li class="logo-ingles"><img src="images/logo2.jpg" alt="">
+           </li></a>
+           
+            <li>
+                <a href="#">Bienvenido Admin</a>
+            </li>      
+        </ul>       
+    </header>
+
+    <main>
+        <div class="container-menu">
+            <div class="opcion">
+                <a href="panel.html">
+                    <img src="images/thermometer.png" alt="sensores">
+                    <p>Sensores</p>
+                </a>
+            </div>
+            <div class="opcion">
+                <a href="">
+                    <img src="images/cctv.png" alt="sensores">
+                    <p>Camara</p>
+                </a>
+            </div>
+            <div class="opcion">
+                <a href="">
+                    <img src="images/browser.png" alt="sensores">
+                    <p>Config</p>
+                </a>
+            </div>
+
+          
+        </div>
+        <div class="container-menu">
+            
+            <div class="opcion">
+                <a href="">
+                    <img src="images/browser.png" alt="sensores">
+                    <p>Visualizacion</p>
+                </a>
+            </div>
+
+            <div class="opcion">
+                <a href="">
+                    <img src="images/browser.png" alt="sensores">
+                    <p>Acerca</p>
+                </a>
+            </div>
+            <div class="opcion">
+                <a href="index.html">
+                    <img src="images/browser.png" alt="sensores">
+                    <p>Salir</p>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                alert('Por favor inicie sesion')
+                window.location.href = '/index.html';
+            }
+
+    </script>
+</body>
+</html>

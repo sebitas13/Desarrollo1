@@ -11,6 +11,12 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* background-color: #1F1F1F; */
+    background-image: url('images/rascacielosazul.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 
@@ -184,3 +190,115 @@ body {
   color:#FFFFFF;
   border: none;
   }
+
+
+/* LOGIN Y REGISTRO */
+
+  
+
+main {
+    height: auto;
+    width: 100%;
+    /* background-color: cadetblue; */
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+    /* margin-top: 3rem; */
+}
+
+
+
+
+
+
+.container-middle {
+    background-color: rgb(51, 51, 51,0.2);
+    /* background-color: #1F1F1F; */
+    /* height: 75vh; */
+    padding: 1rem;    
+    width: 450px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    font-size: 1.2rem;
+    /* background-color: red;   */
+    border-radius: 10px   
+}
+
+
+.container-middle form {
+    box-sizing: border-box;
+    margin: 0.5rem;
+    padding: 1rem;
+    background-color: rgb(31, 31, 31,0.9);
+    /* background-color: chartreuse; */
+    overflow-y: auto;
+    border: 1px solid white;
+    max-height: 100%;
+    border-radius: 10px
+}
+
+.container-middle form #correo,
+.container-middle form #password,
+.container-middle form #nombre {
+    box-sizing: border-box;
+    height: 2rem;
+    font-size: 1rem;
+    
+    border: 2px solid white;
+    border-radius: 5px;
+   
+    color: white;
+    
+    background-color: #333333;
+    width: 100%;
+}
+
+.container-middle form  .imagen {
+    overflow: auto;
+    text-align: center;
+    margin: 1rem; 
+    
+}
+
+.container-middle form #imagenFormulario{
+    border: 2px solid #5532A0;
+    width: 5rem;    
+}
+
+label p {
+    color: #5532A0;
+    margin: 1rem 0;
+    font-size: 1rem;
+}
+
+#btnAgregar {
+    color: #5532A0;
+    font-weight: 500;
+    font-size: 1rem;
+    width: 100%;
+    padding: 0.5rem 0;
+    border-radius: 10px;
+    border: 2px solid #5532A0;
+    margin-top: 2rem;
+    cursor: pointer;
+}
+
+.boton  {
+    text-decoration: none;
+    font-size: 1rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.boton a {
+    color: white;
+}
+
+
+
+
+
+/*  #333333 #1F1F1F  #14171A */
