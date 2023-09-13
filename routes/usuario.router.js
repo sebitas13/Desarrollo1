@@ -8,7 +8,8 @@ const { usuarioGet,
         usuarioPost,
         usuarioPut,
         usuarioDelete,
-        usuario_login
+        usuario_login,
+        autorizar
 } = require('../controllers/usuario.controller');
 
 const validarPostUsuarios = [
@@ -50,6 +51,6 @@ router.delete('/:id',validarJWT,validarDeleteUsuarios,usuarioDelete);
 
 router.post('/login',validarLogin,usuario_login);
 
-
+router.get('/panel',validarJWT,autorizar);
 
 module.exports = router;

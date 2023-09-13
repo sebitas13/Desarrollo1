@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="menu.css">
+    <title>Menu principal</title>
+</head>
+<body>
+    <header>
+        <div onclick="mostrarLateral()" id="burger" class="burger">
+            <div class="barra top"></div>
+            <div class="barra mid"></div>
+            <div class="barra bot"></div>
+        </div>
+
+        <ul  class="menu-lateral">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Perfil de usuario</a></li>
+            <li><a href="#">Ayuda y soporte</a></li>
+            <li><a href="#">Acerca de</a></li>
+            <li><a onclick="logout()" href="#" >Cerrar Sesion</a></li>
+        </ul>
+
+        <ul class="menu">
+            
+            
+           
+            <li>
+                <a href="#">Bienvenido Sebas</a>
+            </li>   
+            
+            <a href="menu.html"> 
+                <li class="logo-ingles">
+                    <img src="images/logo2.jpg" alt="">
+                </li>
+            </a>
+        </ul> 
+        
+        
+    </header>
+
+    <main>
+        <div class="container-menu">
+            
+          
+        </div>
+        
+    </main>
+
+    <script>
+
+            let lateral = document.querySelector('.menu-lateral');
+            let lateral_abierto = false;
+            function mostrarLateral(){
+                if(!lateral_abierto){
+                    lateral.setAttribute('style','left:0px')
+                }else{
+                    lateral.setAttribute('style','left:-240px')
+                }
+                lateral_abierto = !lateral_abierto;
+            }
+
+            function logout(){
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            }
+            console.log(lateral);
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                alert('Por favor inicie sesion')
+                window.location.href = '/index.html';
+            }
+
+    </script>
+</body>
+</html>

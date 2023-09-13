@@ -8,70 +8,134 @@
 </head>
 <body>
     <header>
+        <div onclick="mostrarLateral()" id="burger" class="burger">
+            <div class="barra top"></div>
+            <div class="barra mid"></div>
+            <div class="barra bot"></div>
+        </div>
+
+        <ul  class="menu-lateral">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Perfil de usuario</a></li>
+            <li><a href="#">Ayuda y soporte</a></li>
+            <li><a href="#">Acerca de</a></li>
+            <li><a onclick="logout()" href="#" >Cerrar Sesion</a></li>
+        </ul>
+
         <ul class="menu">
-           <a href="menu.html" class="logo-home"> <li class="logo-ingles"><img src="images/logo2.jpg" alt="">
-           </li></a>
+            
+            
            
             <li>
                 <a href="#">Bienvenido Sebas</a>
-            </li>      
-        </ul>       
+            </li>   
+            
+            <a href="menu.html"> 
+                <li class="logo-ingles">
+                    <img src="images/logo2.jpg" alt="">
+                </li>
+            </a>
+        </ul> 
+        
+        
     </header>
 
     <main>
         <div class="container-menu">
-            <div class="opcion">
-                <a href="panel.html">
+            <div class="opcion" id="opcion1">
+                <!-- <a onclick="panel_sensores()"> -->
+                <a href="#">    
                     <img src="images/thermometer.png" alt="sensores">
-                    <p>Sensores</p>
+                    <div class="titulo">
+                        <p>Sensores</p>
+                    </div>
                 </a>
             </div>
-            <div class="opcion">
-                <a href="">
+            <div class="opcion" id="opcion2">
+                <a href="#">
                     <img src="images/cctv.png" alt="sensores">
-                    <p>Camara</p>
+                    <div class="titulo">
+                        <p>Camara</p>
+                    </div>
                 </a>
             </div>
             <div class="opcion">
-                <a href="">
+                <a href="#">
+                    <img src="images/statistics.png" alt="sensores">
+                    <p>Visualizacion</p>
+                </a>
+            </div>
+            <div class="opcion">
+                <a href="#">
+                    <img src="images/vision.png" alt="sensores">
+                    <p>Monitoreo</p>
+                </a>
+            </div>
+
+            <div class="opcion">
+                <a href="#">
                     <img src="images/browser.png" alt="sensores">
                     <p>Config</p>
                 </a>
             </div>
-
+            <div class="opcion">
+                <a href="index.html" onclick="logout()">
+                    <img src="images/logout.png" alt="sensores">
+                    <p>Logout</p>
+                </a>
+            </div>
           
         </div>
-        <div class="container-menu">
+        <!-- <div class="container-menu">
             
-            <div class="opcion">
-                <a href="">
-                    <img src="images/browser.png" alt="sensores">
-                    <p>Visualizacion</p>
-                </a>
-            </div>
-
-            <div class="opcion">
-                <a href="">
-                    <img src="images/browser.png" alt="sensores">
-                    <p>Acerca</p>
-                </a>
-            </div>
-            <div class="opcion">
-                <a href="index.html">
-                    <img src="images/browser.png" alt="sensores">
-                    <p>Salir</p>
-                </a>
-            </div>
-        </div>
+            
+        </div> -->
     </main>
 
     <script>
             const token = localStorage.getItem('token');
-
-            if (!token) {
-                alert('Por favor inicie sesion')
-                window.location.href = '/index.html';
+            let lateral = document.querySelector('.menu-lateral');
+            let lateral_abierto = false;
+            function mostrarLateral(){
+                if(!lateral_abierto){
+                    lateral.setAttribute('style','left:0px')
+                }else{
+                    lateral.setAttribute('style','left:-240px')
+                }
+                lateral_abierto = !lateral_abierto;
             }
+
+            function logout(){
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+            }
+            autorizar_menu();
+            async function autorizar_menu(){
+                fetch('/api/usuarios/panel',{
+                    method : 'GET',
+                    headers : {
+                        'Content-Type': 'application/json',
+                        'authorization' : `${token}`
+                    },
+                })
+                .then(response => response.json())
+                .then(respuesta=>{
+                    if(respuesta.success){
+                        alert('Autorizacion ok')
+                    }else{
+                        alert('Debe iniciar sesion');
+                        window.location.href = 'index.html';
+                    }
+                })
+                .catch(error=>{
+                    console.error(error);
+                })
+            }
+
+
+            window.addEventListener('popstate', function (event) {
+                autorizar_menu();
+            });
 
     </script>
 </body>

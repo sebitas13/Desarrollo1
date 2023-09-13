@@ -27,42 +27,57 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: auto;
+    /* margin: auto; */
     font-size: 1.2rem;
     background-color: #FFFFFF; 
-    
+    flex-wrap: wrap;
    
+}
+
+.container-menu .titulo {
+    border-bottom: 10px #1F1F1F !important;
+    color: white;
 }
 
 .opcion {
     display: flex;
     justify-content: center;
     align-items: center;
-    
+    box-sizing: border-box;
     text-align: center;
     padding: 1rem;
     width: 15rem;
     margin: 2rem;
 
-    border-radius: 50px;
+    border-radius: 10px;
     background: #e0e0e0;
-    box-shadow:  20px 20px 60px #bebebe,
-             -20px -20px 60px #ffffff;
+    box-shadow:  15px 15px 50px #bebebe,
+             -15px -15px 50px #ffffff;
 }
 
-@media (max-width:600px){
-    .container-menu {
-        flex-direction: column;
-        
-    }
+#opcion1 {
+    background-image: url('images/monitoreoambiental.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: local;
 }
+
+#opcion2 {
+    background-image: url('images/cameraiot.jpeg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: local;
+}
+
 
 .opcion:hover {
     transform: scale(1.1);
 }
 
 .opcion img {
-    width: 80px;
+    width: 30px;
     margin: auto;
 }
 
@@ -70,6 +85,7 @@ body {
     text-decoration: none;
     font-size: 2rem;
     color: #5532A0;
+    color: #14171A;
     /* color: blueviolet; */
     
 
@@ -107,19 +123,13 @@ header {
     
 }
 
-header .logo-ingles img {
-    width: 70px;
-    margin: 0.5rem;
-}
-
-
 
 
 
 header .menu {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: right;
     align-items: center;
     width: 80%;
     /* background-color: #0047BA; */
@@ -128,7 +138,137 @@ header .menu {
     list-style-type: none; /*Esto lo cambie por el display de abajo*/
 }
 
-header .menu .logo-home {
-    width: 30%;
+
+header .logo-ingles img {
+    width: 70px;
+    margin: 0.5rem;
+    margin-left: 2rem;
+}
+
+
+header li a {
+    text-decoration: none;
+    color: white;
+}
+
+
+/* Burger */
+
+#burger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    padding: 0.5rem;
+    position: fixed;
+    left:1.2rem;
+    top: 2rem;
+    z-index: 2;
+    cursor: pointer;
+}
+
+
+/* #burger.abierto .barra {
+    width: 0;
+} */
+
+#burger .barra {
+    width: 1.8rem;
+    height: 2px;
+    background-color: #00BCD4;
+    margin: 0.2rem 0; 
+    transition: 500ms ease-in-out;
+}
+
+
+
+#burger.abierto .barra.top {
+    height: 4px;
+    transform: rotate(45deg) translateY(14px);
+}
+
+#burger.abierto .barra.mid {
+    width: 0;
+}
+
+#burger.abierto .barra.bot {
+    height: 4px;
+    transform: rotate(-45deg) translateY(-14px)
+}
+
+/*MENU LATERAL  */
+
+.menu-lateral {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: left;
+    padding: 1rem;
+    padding-top: 8rem;
+    width: 200px;
+    height: 100vh;
+    background-color: rgb(31, 31, 31,0.8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    font-size: 1rem;
+    transition: 500ms ease-in-out;
+    left: -240px;
+}
+
+.menu-lateral {
+    list-style: none;
+
+}
+
+.menu-lateral li {
+    margin-bottom: 1rem;
     
+}
+
+.menu-lateral li a {
+    font-size: 0.7rem;
+}
+
+@media (max-width:600px){
+    .container-menu {
+        /* flex-direction: column;
+        padding-top: 0;
+        padding-bottom: 0; */
+        justify-items: center;
+        align-items: center;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas de igual tamaño */
+        grid-template-rows: repeat(3, 1fr); /* Tres filas de igual tamaño */
+        gap: 10px; /* Espacio entre elementos */
+    }
+
+    .opcion {
+        margin: 0rem;
+        padding: 0.5rem;
+        /* width: 15rem; */
+        width: 100px;
+        height: 100px;
+    }
+
+    .opcion a{
+        font-size: 1rem !important;
+    }
+
+    header .logo-ingles img {
+        width: 50px;
+       
+    }
+
+    header li a {
+        text-decoration: none;
+        color: white;
+        font-size: 0.5rem;
+    }
+
+    #burger .barra {
+        width: 1.5rem; 
+    }
 }

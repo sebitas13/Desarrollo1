@@ -109,18 +109,18 @@ class Servidor {
             
             
             // Simulacion de envio de entrada de sensores
-            cron.schedule("*/5 * * * * *", ()=>{
-                console.log('Enviando tarea programada');
-                socket.emit('lecturas',JSON.stringify({
-                    temp_c : Math.floor(Math.random() * (100 - 10) + 10),
-                    temp_f: Math.floor(Math.random() * (100 - 10) + 10),
-                    hume :  Math.floor(Math.random() * (100 - 10) + 10),
-                    s_ter :  Math.floor(Math.random() * (100 - 10) + 10),
-                    ldr :  Math.floor(Math.random() * (100 - 10) + 10),
-                    pir :  Math.floor(Math.random() * (100 - 10) + 10),
-                    Fecha :  (new Date().toLocaleString())
-                }));
-            });
+            // cron.schedule("*/5 * * * * *", ()=>{
+            //     console.log('Enviando tarea programada');
+            //     socket.emit('lecturas',JSON.stringify({
+            //         temp_c : Math.floor(Math.random() * (100 - 10) + 10),
+            //         temp_f: Math.floor(Math.random() * (100 - 10) + 10),
+            //         hume :  Math.floor(Math.random() * (100 - 10) + 10),
+            //         s_ter :  Math.floor(Math.random() * (100 - 10) + 10),
+            //         ldr :  Math.floor(Math.random() * (100 - 10) + 10),
+            //         pir :  Math.floor(Math.random() * (100 - 10) + 10),
+            //         Fecha :  (new Date().toLocaleString())
+            //     }));
+            // });
                 
         })
         

@@ -15,7 +15,7 @@ const validarJWT = async (req=request,res=response,next) => {
         const payload = jwt.verify(token,process.env.SECRETORPRIVATEKEY);
 
         //Lectura del usuario que corresponde al uid
-        console.log(payload);
+        // console.log(payload);
 
          const userId = payload.sub;
          const userAuthentified = await Usuario.findOne({_id:userId});

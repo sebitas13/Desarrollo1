@@ -202,11 +202,31 @@ const usuario_login = async (req=query,res=response) => {
 
 }
 
+const autorizar = async (req=query,res=response) => {
+   
+    
+    try {
+        res.status(200).json({ //204
+            "success" : true,
+            "message" : "Usuario autorizado",
+            "data"    : req.usuario
+            
+        })
+    } catch (error) {
+        res.status(400).json({
+            "success" : false,
+            "message" : "Usuario no autorizado",
+            "errors" : error
+        });
+    }
+} 
+
 
 module.exports = {
     usuarioGet,
     usuarioPost,
     usuarioPut,
     usuarioDelete,
-    usuario_login
+    usuario_login,
+    autorizar
 }
