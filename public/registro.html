@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="helpers/toastr.css">
     <link rel="stylesheet" href="style.css">
     <title>Registro</title>
 </head>
@@ -23,6 +24,9 @@
         </div>
     </main>
 
+
+    <script src="helpers/jquery.js"></script>
+    <script src="helpers/toastr.js"></script>
     <script>
         let formulario = document.querySelector('#formulario');
         formulario.addEventListener('submit',enviarDatos);
@@ -55,11 +59,53 @@
             })
             .then(response => response.json())
             .then(respuesta=>{
+                                   
+                console.log(respuesta);
+                
                 if(respuesta.success){
-                    alert('Registro exitoso');
-                    window.location.href = 'index.html';
+                    toastr.options = {
+                            "closeButton": true,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-right",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": "300",
+                            "hideDuration": "1000",
+                            "timeOut": "2000",
+                            "extendedTimeOut": "1000",
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                     }
+                    toastr["success"](`Registro ${respuesta.message}`, "Registro");
+                    setTimeout(()=>{
+                        window.location.href = 'index.html';
+                    },2000)
                 }else{
-                    alert('Ocurrio un error en el registro')
+                    let arr_errores = respuesta.message.errors;
+                    let arr_msg = arr_errores.map(e=>e.msg);
+                
+                    toastr.options = {
+                    "closeButton": false,
+                    "debug": false,
+                    "newestOnTop": true,
+                    "progressBar": false,
+                    "positionClass": "toast-top-center",
+                    "preventDuplicates": true,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "2000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                    }
+                    toastr["error"](`${arr_msg}`, "Error");
                 }
             })
             .catch(error=>{

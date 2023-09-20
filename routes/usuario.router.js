@@ -9,14 +9,15 @@ const { usuarioGet,
         usuarioPut,
         usuarioDelete,
         usuario_login,
-        autorizar
+        autorizar,
+        lecturaSensores
 } = require('../controllers/usuario.controller');
 
 const validarPostUsuarios = [
     check('nombre','Nombre obligatorio').not().isEmpty(),
     check('correo','Correo no valido').isEmail(),
     check('correo').custom(existeCorreo),
-    check('password','min 3 caracteres').isLength({min: 3}),
+    check('password','Password min 3 caracteres').isLength({min: 3}),
     validarCampos
 ]
 
@@ -52,5 +53,9 @@ router.delete('/:id',validarJWT,validarDeleteUsuarios,usuarioDelete);
 router.post('/login',validarLogin,usuario_login);
 
 router.get('/panel',validarJWT,autorizar);
+
+router.get('/lectura-sensores',lecturaSensores);
+
+
 
 module.exports = router;

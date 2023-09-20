@@ -4,10 +4,13 @@ const {createServer} = require('http');
 const {Server} = require('socket.io');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const {saveSensores,simularDatos} = require('../helpers/saveSensores');
 var cron = require('node-cron');
 
 const {Database} = require('../database/config');
 
+
+let array_sensores = [];
 
 class Servidor {
 
@@ -68,7 +71,12 @@ class Servidor {
 
             socket.on('message',(message)=>{
                 //message['Fecha'] = (new Date().toLocaleString("es-MX", {timeZone: "America/Lima"})); //para el deploy
-                message['Fecha'] = (new Date().toLocaleString());
+
+                let date = new Date();
+                //message['Fecha'] = (new Date().toLocaleString());
+                message['Fecha'] = date.getTime();
+                message['Fecha_d'] = date;
+                array_sensores.push(message);
                socket.broadcast.emit('lecturas', JSON.stringify(message));
                 //socket.broadcast.emit('lecturas', message);
                 console.log('Desde esp8266: '+JSON.stringify(message));
@@ -108,19 +116,21 @@ class Servidor {
             });
             
             
+            
+          
             // Simulacion de envio de entrada de sensores
             // cron.schedule("*/5 * * * * *", ()=>{
             //     console.log('Enviando tarea programada');
-            //     socket.emit('lecturas',JSON.stringify({
-            //         temp_c : Math.floor(Math.random() * (100 - 10) + 10),
-            //         temp_f: Math.floor(Math.random() * (100 - 10) + 10),
-            //         hume :  Math.floor(Math.random() * (100 - 10) + 10),
-            //         s_ter :  Math.floor(Math.random() * (100 - 10) + 10),
-            //         ldr :  Math.floor(Math.random() * (100 - 10) + 10),
-            //         pir :  Math.floor(Math.random() * (100 - 10) + 10),
-            //         Fecha :  (new Date().toLocaleString())
-            //     }));
+            //     const obj = simularDatos();
+            //     array_sensores.push(obj);
+            //     socket.emit('lecturas',JSON.stringify(obj));
             // });
+
+            cron.schedule("* * * * *",()=>{
+                saveSensores(array_sensores);
+                array_sensores = [];
+                console.log('save in mongodb');
+            })
                 
         })
         

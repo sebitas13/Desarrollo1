@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="helpers/toastr.css">
     <link rel="stylesheet" href="style.css">
     <title>Login</title>
 </head>
@@ -22,6 +23,10 @@
         </div>
     </main>
 
+
+    
+    <script src="helpers/jquery.js"></script>
+    <script src="helpers/toastr.js"></script>
     <script>
         let formulario = document.querySelector('#formulario');
         formulario.addEventListener('submit',login);
@@ -51,12 +56,50 @@
             .then(response => response.json())
             .then(respuesta=>{
                 const token = respuesta.token;
-                localStorage.setItem('token',token);
+                
                 if(respuesta.success){
-                    alert('Bienvenido');
-                    window.location.href = 'menu.html';
+                    toastr.options = {
+                            "closeButton": true,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-right",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": "300",
+                            "hideDuration": "1000",
+                            "timeOut": "2000",
+                            "extendedTimeOut": "1000",
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                     }
+                    toastr["success"](`Bienvenido ${respuesta.message}`, "Login");
+                    localStorage.setItem('token',token);
+                    setTimeout(()=>{
+                        window.location.href = 'menu.html';
+                    },1000)
+                    
                 }else{
-                    alert('Ocurrio un error en el login')
+                    toastr.options = {
+                    "closeButton": false,
+                    "debug": false,
+                    "newestOnTop": true,
+                    "progressBar": false,
+                    "positionClass": "toast-top-center",
+                    "preventDuplicates": true,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "2000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                    }
+                    toastr["error"](`${respuesta.message}`, "Error");
                 }
             })
             .catch(error=>{

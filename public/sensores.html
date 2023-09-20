@@ -3,8 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <link rel="stylesheet" href="menu.css">
+     <!-- Styles -->
+     <style>
+
+        body {
+            background-color: aliceblue;
+        }
+
+        #chartdiv {
+        width: 100%;
+        height: 500px;
+        max-width: 100%
+        }
+    </style>
     <title>Menu principal</title>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <header>
@@ -41,38 +56,204 @@
     </header>
 
     <main>
-        <div class="container-menu">
-            
-          
-        </div>
+        <div id="chartdiv"></div>
+        <!-- HTML -->
         
+               
     </main>
+    <!-- Resources -->
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 
-    <script>
+    <!-- Chart code -->
+<script>
+    //const socket = io();
+    let temp;
+    let fecha;
+    let fecha_d;
+    var series;
+    var amcharts = am5;
+    var value2 = 100;
+    let lecturas_sensores = [];
+    // socket.on('lecturas', (value)=> {
+      
+    //     // console.log(value);
 
-            let lateral = document.querySelector('.menu-lateral');
-            let lateral_abierto = false;
-            function mostrarLateral(){
-                if(!lateral_abierto){
-                    lateral.setAttribute('style','left:0px')
-                }else{
-                    lateral.setAttribute('style','left:-240px')
-                }
-                lateral_abierto = !lateral_abierto;
-            }
+    //     const {
+    //             temp_c,
+    //             temp_f,
+    //             hume,
+    //             s_ter,
+    //             ldr,
+    //             pir,
+    //             Fecha_d,
+    //             Fecha} = JSON.parse(value);   //JSON.parse(value)
+    //     console.log(`${temp_c} -> ${Fecha}`);
+    //     //socket.emit('enviame',"otra");
+         
+    //     temp = parseInt(temp_c);
+    //     fecha = Fecha;
+    //     fecha_d = Fecha_d;
+      
+    //     series.data.unshift(getData());
+        
+    // })
+    
+    async function getData() {
+        try {
 
-            function logout(){
-                localStorage.removeItem('token');
-                window.location.href = 'index.html';
-            }
-            console.log(lateral);
-            const token = localStorage.getItem('token');
+          const response  = await fetch('/api/usuarios/lectura-sensores',{ method : 'GET' });
 
-            if (!token) {
-                alert('Por favor inicie sesion')
-                window.location.href = '/index.html';
-            }
+          const {success,message,data} = await response.json();
+          return data[0].lecturas;
+          
+          if(!success){
+            throw new Error('Error: '+message)
+          }
+          
+        } catch (error) {
+            console.error(error)
+            throw error;
+        } 
+    }
 
+    // async function obtenerYMostrarDatos() {
+    //   try {
+    //     lecturas_sensores = await getData();
+    //     console.log(lecturas_sensores);
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // }
+
+   
+    am5.ready( async function() {
+      
+    // Create root element
+    // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+    var root = am5.Root.new("chartdiv");
+    
+    
+    // Set themes
+    // https://www.amcharts.com/docs/v5/concepts/themes/
+    root.setThemes([
+      am5themes_Animated.new(root)
+    ]);
+    
+    
+    // Create chart
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/
+    var chart = root.container.children.push(am5xy.XYChart.new(root, {
+      panX: true,
+      panY: true,
+      wheelX: "panX",
+      wheelY: "zoomX",
+      pinchZoomX:true
+    }));
+    
+    
+    // Add cursor
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
+    var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
+      behavior: "none"
+    }));
+    cursor.lineY.set("visible", false);
+    
+    
+    // Generate random data
+        // var date = new Date();
+        // date.setHours(0, 0, 0, 0);
+        // // var value = 100;
+        // am5.time.add(date, "second", 5);
+    function generateData() {
+      value = Math.round((Math.random() * 10 - 5) + value);
+      am5.time.add(date, "second", 5); //cada 5 segundos calcula un dato
+      
+      return {
+        date: date.getTime(),
+        value: value
+      };
+    }
+
+    
+    async function generateDatas() {
+      var data = [];
+      lecturas_sensores = await getData();
+      const marcaDeTiempoUTC = lecturas_sensores[0].Fecha;
+      const diferenciaHoraria = -19; // UTC-5 para Lima, Perú
+      const marcaDeTiempoLocal = marcaDeTiempoUTC + diferenciaHoraria * 60 * 60 * 1000;
+      var date = new Date(lecturas_sensores[0].Fecha); //establecemos el inicio del intervalo
+      lecturas_sensores.forEach(e => {
+          console.log(e.temp_c);
+          am5.time.add(date, "second", 5); //cada 5 segundos calcula un dato
+          data.push( {
+            //date : e.Fecha,
+            date : date.getTime(), //Ojo se esta calculando cada 5s desde el inicio del intervalo
+            value : parseFloat(e.temp_c)
+          });
+      });
+      // var data = [];
+      // for (var i = 0; i < count; ++i) {
+      //   data.push(generateData());
+      // }
+      return data;
+    }
+    
+    // console.log(generateDatas());;
+    // Create axes
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+    var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+      maxDeviation: 0.2,
+      baseInterval: {   //Cada 5 segundos llega un dato
+        timeUnit: "second",
+        count:5    
+      },
+      renderer: am5xy.AxisRendererX.new(root, {}),
+      tooltip: am5.Tooltip.new(root, {})
+    }));
+    
+    var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+      renderer: am5xy.AxisRendererY.new(root, {
+        pan:"zoom"
+      })  
+    }));
+    
+    
+    // Add series
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+    series = chart.series.push(am5xy.LineSeries.new(root, {
+      name: "Series",
+      xAxis: xAxis,
+      yAxis: yAxis,
+      valueYField: "value",
+      valueXField: "date",
+      tooltip: am5.Tooltip.new(root, {
+        labelText: "{valueY}"
+      })
+    }));
+    
+    
+    // Add scrollbar
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
+    chart.set("scrollbarX", am5.Scrollbar.new(root, {
+      orientation: "horizontal"
+    }));
+    
+    
+    //Set data
+     var data = await generateDatas();
+     series.data.setAll(data) ;
+        
+    
+    // Make stuff animate on load
+    // https://www.amcharts.com/docs/v5/concepts/animations/
+        series.appear(1000);
+        chart.appear(1000, 100);
+    
+    }); // end am5.ready()
+    
     </script>
+   
 </body>
 </html>
