@@ -126,11 +126,11 @@ class Servidor {
             //     socket.emit('lecturas',JSON.stringify(obj));
             // });
 
-            cron.schedule("* * * * *",()=>{
-                saveSensores(array_sensores);
-                array_sensores = [];
-                console.log('save in mongodb');
-            })
+            // cron.schedule("* * * * *",()=>{
+            //     saveSensores(array_sensores);
+            //     array_sensores = [];
+            //     console.log('save in mongodb');
+            // })
                 
         })
         

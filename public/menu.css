@@ -138,7 +138,8 @@ header {
     top: 0; /*Importante */
     z-index: 1;
     
-    height: 15vh;
+    /* height: 15vh; */
+    height: 90px;
     padding-bottom: 0.5rem;
     
 
@@ -159,16 +160,18 @@ header .menu {
     justify-content: right;
     align-items: center;
     width: 80%;
+    height: 50px;
     /* background-color: #0047BA; */
     background-color: #14171A;
+    /* background-color: red; */
     border-bottom: 1px solid rgba(255, 255, 255, 0.207);
     list-style-type: none; /*Esto lo cambie por el display de abajo*/
 }
 
 
 header .logo-ingles img {
-    width: 70px;
-    margin: 0.5rem;
+    width: 50px;
+    /* margin: 0.5rem; */
     margin-left: 2rem;
 }
 
@@ -176,6 +179,12 @@ header .logo-ingles img {
 header li a {
     text-decoration: none;
     color: white;
+}
+
+@media screen and (orientation: landscape) {
+    header {
+        position: relative;
+    }
 }
 
 
@@ -190,7 +199,7 @@ header li a {
     padding: 0.5rem;
     position: fixed;
     left:1.2rem;
-    top: 2rem;
+    top: 1.5rem;
     z-index: 2;
     cursor: pointer;
 }
@@ -261,9 +270,7 @@ header li a {
 
 @media (max-width:600px){
     .container-menu {
-        /* flex-direction: column;
-        padding-top: 0;
-        padding-bottom: 0; */
+        
         justify-items: center;
         align-items: center;
         display: grid;
@@ -292,7 +299,7 @@ header li a {
     header li a {
         text-decoration: none;
         color: white;
-        font-size: 0.5rem;
+        font-size: 0.7rem;
     }
 
     #burger .barra {
