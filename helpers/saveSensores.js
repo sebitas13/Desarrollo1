@@ -35,7 +35,7 @@ const simularDatos = ()=>{
                 //let date = `${(new Date())}`;
                 
     return {
-             temp_c : Math.floor(Math.random() * (100 - 10) + 10),
+             temp_c : Math.floor(Math.random() * 61),
              temp_f: Math.floor(Math.random() * (100 - 10) + 10),
              hume :  Math.floor(Math.random() * (100 - 10) + 10),
              s_ter :  Math.floor(Math.random() * (100 - 10) + 10),

@@ -5,6 +5,7 @@ const {Server} = require('socket.io');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const {saveSensores,simularDatos} = require('../helpers/saveSensores');
+
 var cron = require('node-cron');
 
 const {Database} = require('../database/config');
@@ -119,14 +120,15 @@ class Servidor {
             
           
             // Simulacion de envio de entrada de sensores
-            // cron.schedule("*/5 * * * * *", ()=>{
-            //     console.log('Enviando tarea programada');
-            //     const obj = simularDatos();
-            //     array_sensores.push(obj);
-            //     socket.emit('lecturas',JSON.stringify(obj));
-            // });
-
-            // cron.schedule("* * * * *",()=>{
+            
+            cron.schedule("*/5 * * * * *", ()=>{
+                console.log('Enviando tarea programada');
+                const obj = simularDatos();
+                array_sensores.push(obj);
+                socket.emit('lecturas',JSON.stringify(obj));
+            });
+           
+            // cron.schedule("*/15 * * * *",()=>{
             //     saveSensores(array_sensores);
             //     array_sensores = [];
             //     console.log('save in mongodb');
