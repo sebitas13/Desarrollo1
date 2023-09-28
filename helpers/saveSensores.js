@@ -39,7 +39,7 @@ const simularDatos = ()=>{
              temp_f: Math.floor(Math.random() * (100 - 10) + 10),
              hume :  Math.floor(Math.random() * (100 - 10) + 10),
              s_ter :  Math.floor(Math.random() * (100 - 10) + 10),
-             ldr :  Math.floor(Math.random() * (100 - 10) + 10),
+             ldr :  Math.floor(Math.random() * (1000 - 10) + 10),
              pir :  Math.floor(Math.random() * (100 - 10) + 10),
                // Fecha :  (new Date().toLocaleString())
              Fecha_d : date,

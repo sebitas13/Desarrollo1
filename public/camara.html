@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor de temperatura</title>
+    <link rel='stylesheet' href='https://unpkg.com/bulma@0.9.1/css/bulma.min.css'>
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+
+    <link rel="stylesheet" href="menu.css">
+    <style>
+
+        body {
+            background-color: aliceblue;
+        }
+
+        #toggleBtn1, #toggleBtn3 {
+            height: 3rem;
+            width: 3rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #fff;
+            background-color: hotpink;
+        }
+
+        #toggleBtn1, #toggleBtn3 :hover {
+            transform: scale(1.1);
+            box-shadow: hotpink 0px 14px 28px;
+        }
+
+        #toggleBtn1.on, #toggleBtn3.on {
+            background-color: mediumaquamarine;
+        }
+
+        #toggleBtn1.on, #toggleBtn3.on:hover {
+            box-shadow: mediumaquamarine 0px 14px 28px;
+        }
+
+        
+
+
+        .leyenda-graficas {
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) !important;
+          background-color: rgba(0, 187, 212);
+          border: 1px solid #ccc;
+          padding: 10px;
+         
+          border-radius: 5px;
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Estilos para cada elemento de la leyenda */
+        .leyenda-item {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        /* Estilos para el cuadro de color de la leyenda */
+        .leyenda-color {
+          width: 20px;
+          height: 20px;
+          margin-right: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+
+        /* Estilos para el texto de la leyenda */
+        .leyenda-texto {
+          font-size: 1rem;
+          color: aliceblue;
+          margin-right: 1rem;
+        }
+
+        .container-canvas {
+            overflow: auto;
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: left;
+            margin-top: 1rem;
+        }
+
+        #canvas {
+            width: 640px;
+            height: 480px;
+            display: flex;
+            /* border: 1px solid #00BBD4; */
+            margin: auto;
+            margin-bottom: 1rem;
+        }
+
+        .opcion2 {
+            margin: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+          
+       
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    
+    <header>
+        <div onclick="mostrarLateral()" id="burger" class="burger">
+            <div class="barra top"></div>
+            <div class="barra mid"></div>
+            <div class="barra bot"></div>
+        </div>
+
+        <ul  class="menu-lateral">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Perfil de usuario</a></li>
+            <li><a href="#">Ayuda y soporte</a></li>
+            <li><a href="#">Acerca de</a></li>
+            <li><a onclick="logout()" href="#" >Cerrar Sesion</a></li>
+        </ul>
+
+        <ul class="menu">
+            
+            
+           
+            <li>
+                <a href="#">Bienvenido Sebas</a>
+            </li>   
+            
+            <a href="menu.html"> 
+                <li class="logo-ingles">
+                    <img src="images/logo2.jpg" alt="">
+                </li>
+            </a>
+        </ul> 
+        
+        
+    </header>
+
+    <main>
+
+      <div>
+        <div class="leyenda-graficas">
+            
+          <div class="leyenda-item">
+            <!-- <div class="leyenda-color" style="background-color: #6BB4D5;"></div> -->
+            <div class="opcion2">
+                <span class="leyenda-texto">LIVE CAM</span>
+                <button id="toggleBtn1">OFF</button>
+            </div>
+            <div class="opcion2">
+                <span class="leyenda-texto">LUZ</span>
+                <button id="toggleBtn3">OFF</button>
+            </div>
+          </div>
+         
+        </div>
+      </div>
+      
+      
+         
+        <!-- HTML -->
+
+        <div class="container-canvas" >
+            <canvas id="canvas" ></canvas>
+        </div>
+        
+
+        </canvas>
+               
+    </main>
+
+    
+    <script>
+
+            const socket = io();
+            const toggleBtn1 = document.getElementById('toggleBtn1');
+            
+            let lateral = document.querySelector('.menu-lateral');
+            let lateral_abierto = false;
+
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+
+            // ENCENDER APAGAR CAMARA
+            let buttonState = false;
+            toggleBtn1.addEventListener('click', () => {
+                buttonState = !buttonState;
+                updateUI();
+                console.log('Estado actualizado', buttonState);
+                socket.emit('buttonState', buttonState);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);    
+               
+            });
+
+            const updateUI = () => {
+                if(buttonState){
+                    toggleBtn1.classList.add('on');
+                    canvas.setAttribute('style','display:flex');
+                    
+                }else{
+                    toggleBtn1.classList.remove('on'); 
+                    
+                    canvas.setAttribute('style','display:none');
+                    //canvas.setAttribute('style','border: 2px solid #00BBD4;');
+                    // canvas.setAttribute('style','background-color: black;');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+               
+                toggleBtn1.innerText = buttonState ? 'ON' : 'OFF';
+            };
+
+            //Es necesario para que se actualice el boton en los otros usuarios
+            socket.on('buttonState', state => {
+              
+                buttonState = state;
+                updateUI();
+                console.log('Estado actualizado por otro usuario', state);
+            });
+
+
+            // ENCENDER APAGAR ILUMINACION MANUALMENTE
+            const toggleBtn3 = document.getElementById('toggleBtn3');
+            let buttonState3 = false;
+            toggleBtn3.addEventListener('click', () => {
+                buttonState3 = !buttonState3;
+                updateUI3();
+                console.log('Estado iluminar: ', buttonState3);
+                socket.emit('iluminar', buttonState3);
+               
+            });
+
+            const updateUI3 = () => {
+                if(buttonState3){
+                    toggleBtn3.classList.add('on');
+                    
+                }else{
+                    toggleBtn3.classList.remove('on'); 
+                }
+               
+                toggleBtn3.innerText = buttonState ? 'ON' : 'OFF';
+            };
+
+            //Es necesario para que se actualice el boton en los otros usuarios
+            socket.on('iluminar', state => {
+              
+                buttonState3 = state;
+                updateUI3();
+                console.log('Estado luz actualizado por otro usuario', state);
+            });
+
+            //ENCENDER LA LUZ EN LA OSCURIDAD
+            
+            socket.on('lecturas', (value)=> {
+
+                console.log(value);
+
+                const {
+                        temp_c,
+                        temp_f,
+                        hume,
+                        s_ter,
+                        ldr,
+                        pir,
+                        Fecha} = JSON.parse(value);   //JSON.parse(value)
+                 
+                        if(parseFloat(ldr)<100){
+                            buttonState3 = true;
+                            updateUI3();
+                            socket.emit('iluminar', buttonState3);
+                        }else{
+                            buttonState3 = false;
+                            updateUI3();
+                            socket.emit('iluminar', buttonState3);
+                        }
+                
+
+                });
+            // ---------------------
+           
+            var img = new Image();  
+            img.onload = function() { //funcion  se ejecuta cuando la imagen se carga correctamente.
+
+                    //Se define el ancho y alto del elemento de lienzo (canvas) en base a las dimensiones de la imagen cargada(img)
+                    canvas.style.width=this.width+'px'; 
+                    canvas.style.height=this.height+'px'; 
+
+                    //Para dibujar la imagen cargada (img) en el lienzo. Los parámetros especifican la imagen de origen (coordenadas x e y, ancho y alto),
+                    // así como la ubicación y el tamaño en el lienzo donde se dibujará la imagen.
+                    ctx.drawImage(this, 0, 0, this.width,this.height, 0, 0, canvas.width, canvas.height); 
+
+               
+            }
+            
+
+            socket.on('stream_to_client', function(message) {
+                
+                // Se crea un objeto Blob a partir del contenido del mensaje. 
+                //El mensaje debe contener los datos binarios de la imagen en formato JPEG. 
+                //La opción type se establece en "image/jpeg" para indicar que el Blob contiene una imagen JPEG.
+
+                var blob = new Blob([message], {type: "image/jpeg"}); 
+
+                //Se crea una referencia al objeto URL, que es una interfaz proporcionada
+                // por los navegadores para crear y gestionar URL de objetos.
+                var domURL = self.URL || self.webkitURL || self;
+                //Se utiliza el objeto URL para crear una URL de objeto a partir del Blob creado anteriormente
+                url = domURL.createObjectURL(blob);
+
+                //Se establece la propiedad src de un elemento de imagen (img) con la URL generada. 
+                ///Esto carga la imagen en el elemento de imagen y la muestra en el navegador.
+                img.src = url;	
+            });
+
+            //Cada 30 segundos se desactiva la camara por seguridad
+            
+            function apagarCamaraAutomaticamente() {
+                console.log("Esta función se ejecuta cada minuto.");
+                buttonState = false;
+                updateUI();
+                 console.log('Se termino el tiempo', buttonState);
+                //alert('Camara apagada por seguridad');
+                socket.emit('buttonState', buttonState);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+
+            const intervalo = setInterval(apagarCamaraAutomaticamente, 60000);
+
+
+            function mostrarLateral(){
+                  if(!lateral_abierto){
+                      lateral.setAttribute('style','left:0px')
+                  }else{
+                      lateral.setAttribute('style','left:-240px')
+                  }
+                  lateral_abierto = !lateral_abierto;
+      }
+
+            function logout(){
+                  localStorage.removeItem('token');
+                  toastr.options = {
+                      "closeButton": false,
+                      "debug": false,
+                      "newestOnTop": true,
+                      "progressBar": true,
+                      "positionClass": "toast-bottom-full-width",
+                      "preventDuplicates": true,
+                      "onclick": null,
+                      "showDuration": "300",
+                      "hideDuration": "1000",
+                      "timeOut": "2000",
+                      "extendedTimeOut": "1000",
+                      "showEasing": "swing",
+                      "hideEasing": "linear",
+                      "showMethod": "fadeIn",
+                      "hideMethod": "fadeOut"
+                  }
+                  toastr["info"]("Cerrando sesión", "Logout")
+                  setTimeout(()=>{
+                      window.location.href = 'index.html';
+                  },2000)     
+                  
+              }
+      
+
+            
+    </script>
+</body>
+</html>

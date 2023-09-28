@@ -38,19 +38,7 @@ socket.on('lecturas', (value)=> {
     //socket.emit('enviame',"otra");
 })
 
-// socket.on('lecturas2', (value)=> {
 
-//     console.log(value);
-
-//     const {
-            
-//             pir
-//             } = JSON.parse(value);
-    
-    
-//     p.innerHTML = pir;
-    
-// })
 
 
 //Logica del boton encendido - apagado
@@ -83,6 +71,11 @@ socket.on('buttonState', state => {
     buttonState = state;
     updateUI();
 });
+
+
+
+
+
 
 //MONITEREO
 

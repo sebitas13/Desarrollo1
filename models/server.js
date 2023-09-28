@@ -9,6 +9,7 @@ const {saveSensores,simularDatos} = require('../helpers/saveSensores');
 var cron = require('node-cron');
 
 const {Database} = require('../database/config');
+const { log } = require('console');
 
 
 let array_sensores = [];
@@ -62,10 +63,12 @@ class Servidor {
     }
 
     sockets(){
-        let buttonState = false;
+        let estadoBoton = false;
+        let estadoIluminar = false;
         this.io.on('connection',(socket)=>{
             console.log(`Conectado con el cliente ${socket.id}`)
-                    
+            socket.emit('buttonState', estadoBoton);  //Si se conecta un nuevo usuario, recibe el valor del boton ya actualizado      
+            socket.emit('iluminar', estadoIluminar);
             socket.on('disconnect',()=>{
                 console.log('Cliente desconectado');
             })
@@ -83,6 +86,26 @@ class Servidor {
                 console.log('Desde esp8266: '+JSON.stringify(message));
             })
 
+            // if(estadoBoton){
+            //     console.log('SENSORES INHABILITADOS');
+            // }else{
+            //     console.log('SENSORES HABILITADOS');
+            //     socket.on('message',(message)=>{
+            //         //message['Fecha'] = (new Date().toLocaleString("es-MX", {timeZone: "America/Lima"})); //para el deploy
+    
+            //         let date = new Date();
+            //         //message['Fecha'] = (new Date().toLocaleString());
+            //         message['Fecha'] = date.getTime();
+            //         message['Fecha_d'] = date;
+            //         array_sensores.push(message);
+            //        socket.broadcast.emit('lecturas', JSON.stringify(message));
+            //         //socket.broadcast.emit('lecturas', message);
+            //         console.log('Desde esp8266: '+JSON.stringify(message));
+            //     })
+            // }
+
+            
+
             socket.on('message2',(message)=>{
                 
                 //message['Fecha'] = (new Date().toLocaleString());
@@ -97,15 +120,25 @@ class Servidor {
 
             socket.on('buttonState', value => {
                 console.log('buttonState:', value);
-                //buttonState = value;
-                socket.broadcast.emit('buttonState', value);
+                estadoBoton = value;
+                socket.broadcast.emit('buttonState', value); //revisar esto, para que al cambiar
+                                                //El estado del boton, lo haga para todos los usuarios
             });
 
 
             socket.on('buttonState2', value => {
                 console.log('buttonState2:', value);
-                //buttonState = value;
+                // estadoBoton = value;
                 socket.broadcast.emit('buttonState2', value);
+            });
+
+            //Lectura de boton eliminar
+
+            socket.on('iluminar', value => {
+                console.log('iluminar:', value);
+                // estadoBoton = value;
+                estadoIluminar = value;
+                socket.broadcast.emit('iluminar', value);
             });
 
 
@@ -121,12 +154,12 @@ class Servidor {
           
             // Simulacion de envio de entrada de sensores
             
-            cron.schedule("*/5 * * * * *", ()=>{
-                console.log('Enviando tarea programada');
-                const obj = simularDatos();
-                array_sensores.push(obj);
-                socket.emit('lecturas',JSON.stringify(obj));
-            });
+            // cron.schedule("*/5 * * * * *", ()=>{
+            //     console.log('Enviando tarea programada');
+            //     const obj = simularDatos();
+            //     array_sensores.push(obj);
+            //     socket.emit('lecturas',JSON.stringify(obj));
+            // });
            
             // cron.schedule("*/15 * * * *",()=>{
             //     saveSensores(array_sensores);
