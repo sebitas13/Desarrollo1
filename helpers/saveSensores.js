@@ -3,30 +3,49 @@ const Sensor = require('../models/sensor');
 
 const saveSensores = async (array_sensores) => {
     try {
-        const sensor = await Sensor.find({});
-        if(sensor.length === 0){
-            const sensor = new Sensor({
-                lecturas : [],
-                fecha : new Date()
-            })
+        // const sensor = await Sensor.find({});
+        // console.log(sensor)
+        // if(sensor.length === 0){
+        //     const sensor = new Sensor({
+        //         lecturas : [],
+        //         fecha : new Date()
+        //     })
             
-            sensor.save();
-            console.log('creado');
+        //     sensor.save();
+        //     console.log('creado');
             
-        }else{
-            const sensor = await Sensor
+        // }else{
+        //     const sensor = await Sensor
+        //     .findOneAndUpdate({name : 'sensores'},
+        //     {
+        //         lecturas : array_sensores,
+        //         fecha : new Date()
+        //     },
+        //     { new: true ,
+        //         upsert: true, // Crea el documento si no existe
+        //         setDefaultsOnInsert: true
+        //     }
+        //     )
+            
+        //     console.log('sensores actualizado :',sensor);
+        // }  
+        const sensor = await Sensor
             .findOneAndUpdate({name : 'sensores'},
             {
                 lecturas : array_sensores,
                 fecha : new Date()
             },
-            { new: true }
+            { new: true ,
+                upsert: true, // Crea el documento si no existe
+                setDefaultsOnInsert: true
+            }
             )
-
-            //console.log('sensores  :',sensor);
-        }  
+            
+            console.log('sensores actualizado :',sensor);
     } catch (error) {
         console.log(error);   
+    } finally{
+        array_sensores.length = 0;
     }
 }
 

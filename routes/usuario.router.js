@@ -41,22 +41,12 @@ const validarLogin = [
 ]
 
 const router = express.Router();
-
 router.get('/',usuarioGet);
-
 router.post('/',validarPostUsuarios,usuarioPost);   
-
 router.put('/:id',validarPutUsuarios,usuarioPut);
-
 router.delete('/:id',validarJWT,validarDeleteUsuarios,usuarioDelete);
-
-
 router.post('/login',validarLogin,usuario_login);
-
 router.get('/panel',validarJWT,autorizar);
-
 router.get('/lectura-sensores',lecturaSensores);
-
 router.get('/lectura-imagenes',lecturaImagenes);
-
 module.exports = router;

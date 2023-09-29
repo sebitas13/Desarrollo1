@@ -1,6 +1,5 @@
 
 const mongoose = require('mongoose');
-
 const imagenSchema = mongoose.Schema({
 
     name : {
@@ -15,8 +14,6 @@ const imagenSchema = mongoose.Schema({
     }
 });
 
-
 const Imagen = mongoose.model('Imagen',imagenSchema);
-
 module.exports = Imagen
 

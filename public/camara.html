@@ -288,31 +288,31 @@
 
             //ENCENDER LA LUZ EN LA OSCURIDAD
             
-            socket.on('lecturas', (value)=> {
+            // socket.on('lecturas', (value)=> {
 
-                console.log(value);
+            //     console.log(value);
 
-                const {
-                        temp_c,
-                        temp_f,
-                        hume,
-                        s_ter,
-                        ldr,
-                        pir,
-                        Fecha} = JSON.parse(value);   //JSON.parse(value)
+            //     const {
+            //             temp_c,
+            //             temp_f,
+            //             hume,
+            //             s_ter,
+            //             ldr,
+            //             pir,
+            //             Fecha} = JSON.parse(value);   //JSON.parse(value)
                  
-                        if(parseFloat(ldr)<100){
-                            buttonState3 = true;
-                            updateUI3();
-                            socket.emit('iluminar', buttonState3);
-                        }else{
-                            buttonState3 = false;
-                            updateUI3();
-                            socket.emit('iluminar', buttonState3);
-                        }
+            //             if(parseFloat(ldr)<100){
+            //                 buttonState3 = true;
+            //                 updateUI3();
+            //                 socket.emit('iluminar', buttonState3);
+            //             }else{
+            //                 buttonState3 = false;
+            //                 updateUI3();
+            //                 socket.emit('iluminar', buttonState3);
+            //             }
                 
 
-                });
+            //     });
             // ---------------------
            
             var img = new Image();  

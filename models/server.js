@@ -90,9 +90,8 @@ class Servidor {
                 //message['Fecha'] = (new Date().toLocaleString());
                 message['Fecha'] = date.getTime();
                 message['Fecha_d'] = date;
-                //array_sensores.push(message); Activar cuando se desea guardar en la BD
+                array_sensores.push(message)    ;                                   //Activar cuando se desea guardar en la BD
                 socket.broadcast.emit('lecturas', JSON.stringify(message));
-                //socket.broadcast.emit('lecturas', message);
                 console.log('Desde esp8266: '+JSON.stringify(message));
             })
 
@@ -127,7 +126,7 @@ class Servidor {
             //Lectura de boton eliminar
 
             socket.on('iluminar', value => {
-                console.log('iluminar:', value);
+                
                 // estadoBoton = value;
                 estadoIluminar = value;
                 socket.broadcast.emit('iluminar', value);
@@ -142,25 +141,25 @@ class Servidor {
                 socket.broadcast.emit('stream_to_client',msg.pic)
                 console.log(msg.pic);
 
-                array_imagenes.push(msg.pic);
+                // array_imagenes.push(msg.pic);
 
-                if(array_imagenes.length > 20){
-                    saveImagenes(array_imagenes);
-                    array_imagenes = []
-                    console.log('save images in mongodb');
-                } 
+                // if(array_imagenes.length > 20){
+                //     saveImagenes(array_imagenes);
+                //     array_imagenes = []
+                //     console.log('save images in mongodb');
+                // } 
 
-                if(!estadoBoton && estadoMonitoreo){
-                    console.log('mensaje del pir');
-                    console.log(msg.pic);
+                // if(!estadoBoton && estadoMonitoreo){
+                //     console.log('mensaje del pir');
+                //     console.log(msg.pic);
 
-                    array_imagenes.push(msg.pic);
-                    if(array_imagenes.length > 10){
-                        saveImagenes(array_imagenes);
-                        array_imagenes = []
-                        console.log('save in mongodb');
-                    } 
-                }
+                //     array_imagenes.push(msg.pic);
+                //     if(array_imagenes.length > 10){
+                //         saveImagenes(array_imagenes);
+                //         array_imagenes = []
+                //         console.log('save in mongodb');
+                //     } 
+                // }
             });
             
             
@@ -175,13 +174,15 @@ class Servidor {
             //     socket.emit('lecturas',JSON.stringify(obj));
             // });
            
-            //Guardar la info de los sensores en la BD cada 15 minutos
-            // cron.schedule("*/15 * * * *",()=>{
-            //     saveSensores(array_sensores);
-            //     array_sensores = [];
-            //     console.log('save in mongodb');
-            // })
+            
                 
+        })
+
+        //Guardar la info de los sensores en la BD cada 15 minutos
+        cron.schedule("*/15 * * * *",()=>{
+            saveSensores(array_sensores);
+            
+            console.log('save in mongodb');
         })
         
     }

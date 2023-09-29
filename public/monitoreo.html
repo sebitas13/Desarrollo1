@@ -115,7 +115,7 @@
                 font-size: 0.5rem;
             }
         }
-
+        /* GALERIA DE IMAGENES******* */
         .gallery-container {
                 display: flex;
                 flex-wrap: wrap;
@@ -124,6 +124,15 @@
 
             .gallery-item {
                 margin: 10px;
+                max-width: 200px;
+                max-height: 150px;
+                transition: transform 0.3s ease;
+                cursor: pointer;
+            }
+
+            .zoomed {
+                    
+                transform: scale(1.5); 
             }
 
             .pagination {
@@ -208,10 +217,10 @@
        
         <div class="container-canvas" >
             <img id="imgCapturada" alt="">
+            <div id="intruso">Fecha</div>
         </div>
         
 
-        </canvas>
                
     </main>
 
@@ -286,6 +295,8 @@
             const intervalo = setInterval(apagarMonitoreoAutomaticamente, 120000);
 
 
+        let fechaIntruso;
+        
         async function getData() {
                 try {
 
@@ -295,6 +306,9 @@
                 if(!success){
                     throw new Error('Error: '+message)
                 }
+                    fechaIntruso = data.fecha;
+                    const opciones = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
+                    document.querySelector('#intruso').textContent = new Date(fechaIntruso).toLocaleDateString(undefined,opciones);
                     return data.lecturas;
 
                 } catch (error) {
@@ -346,7 +360,7 @@
           async  function displayGalleryPage(pageNumber) {
             // Número de imágenes por página y total de imágenes
             arreglo_imagenes = await getData();
-            const itemsPerPage = 10; // Por ejemplo, 10 imágenes por página
+            const itemsPerPage = 18; // Por ejemplo, 10 imágenes por página
             const totalItems = arreglo_imagenes.length;
             const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -367,6 +381,14 @@
                 imgElement.src = imageUrl;
                 imgElement.alt = `Imagen ${start + index + 1}`; // Números de imagen comenzando desde 1
                 imgElement.classList.add('gallery-item'); // Agrega una clase CSS si es necesario
+
+                // Establece un tamaño máximo para las imágenes
+                imgElement.style.maxWidth = '200px'; 
+                imgElement.style.maxHeight = '150px'; 
+                    imgElement.addEventListener('click', () => {
+                    imgElement.classList.toggle('zoomed');
+                });
+
                 galleryContainer.appendChild(imgElement);
             });
 
