@@ -5,6 +5,9 @@ const {Server} = require('socket.io');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const {saveSensores,simularDatos} = require('../helpers/saveSensores');
+const {saveImagenes} = require('../helpers/saveImagenes');
+const fs = require('fs');
+const Imagen = require('./imagen');
 
 var cron = require('node-cron');
 
@@ -12,8 +15,9 @@ const {Database} = require('../database/config');
 const { log } = require('console');
 
 
-let array_sensores = [];
 
+let array_sensores = [];
+let array_imagenes = [];
 class Servidor {
 
 
@@ -64,12 +68,18 @@ class Servidor {
 
     sockets(){
         let estadoBoton = false;
+        let estadoMonitoreo = false;
         let estadoIluminar = false;
         this.io.on('connection',(socket)=>{
             console.log(`Conectado con el cliente ${socket.id}`)
             socket.emit('buttonState', estadoBoton);  //Si se conecta un nuevo usuario, recibe el valor del boton ya actualizado      
             socket.emit('iluminar', estadoIluminar);
+            
+            
             socket.on('disconnect',()=>{
+
+                estadoBoton = false;
+                socket.broadcast.emit('buttonState', estadoBoton);
                 console.log('Cliente desconectado');
             })
 
@@ -80,29 +90,11 @@ class Servidor {
                 //message['Fecha'] = (new Date().toLocaleString());
                 message['Fecha'] = date.getTime();
                 message['Fecha_d'] = date;
-                array_sensores.push(message);
-               socket.broadcast.emit('lecturas', JSON.stringify(message));
+                //array_sensores.push(message); Activar cuando se desea guardar en la BD
+                socket.broadcast.emit('lecturas', JSON.stringify(message));
                 //socket.broadcast.emit('lecturas', message);
                 console.log('Desde esp8266: '+JSON.stringify(message));
             })
-
-            // if(estadoBoton){
-            //     console.log('SENSORES INHABILITADOS');
-            // }else{
-            //     console.log('SENSORES HABILITADOS');
-            //     socket.on('message',(message)=>{
-            //         //message['Fecha'] = (new Date().toLocaleString("es-MX", {timeZone: "America/Lima"})); //para el deploy
-    
-            //         let date = new Date();
-            //         //message['Fecha'] = (new Date().toLocaleString());
-            //         message['Fecha'] = date.getTime();
-            //         message['Fecha_d'] = date;
-            //         array_sensores.push(message);
-            //        socket.broadcast.emit('lecturas', JSON.stringify(message));
-            //         //socket.broadcast.emit('lecturas', message);
-            //         console.log('Desde esp8266: '+JSON.stringify(message));
-            //     })
-            // }
 
             
 
@@ -128,7 +120,7 @@ class Servidor {
 
             socket.on('buttonState2', value => {
                 console.log('buttonState2:', value);
-                // estadoBoton = value;
+                estadoMonitoreo = value;
                 socket.broadcast.emit('buttonState2', value);
             });
 
@@ -143,10 +135,32 @@ class Servidor {
 
 
             //Stream
-
+            
             socket.on('stream_event', function(msg){
-                //console.log("imagen recibida del esp32cam")
+                console.log("imagen recibida del esp32cam")
+                
                 socket.broadcast.emit('stream_to_client',msg.pic)
+                console.log(msg.pic);
+
+                array_imagenes.push(msg.pic);
+
+                if(array_imagenes.length > 20){
+                    saveImagenes(array_imagenes);
+                    array_imagenes = []
+                    console.log('save images in mongodb');
+                } 
+
+                if(!estadoBoton && estadoMonitoreo){
+                    console.log('mensaje del pir');
+                    console.log(msg.pic);
+
+                    array_imagenes.push(msg.pic);
+                    if(array_imagenes.length > 10){
+                        saveImagenes(array_imagenes);
+                        array_imagenes = []
+                        console.log('save in mongodb');
+                    } 
+                }
             });
             
             
@@ -161,6 +175,7 @@ class Servidor {
             //     socket.emit('lecturas',JSON.stringify(obj));
             // });
            
+            //Guardar la info de los sensores en la BD cada 15 minutos
             // cron.schedule("*/15 * * * *",()=>{
             //     saveSensores(array_sensores);
             //     array_sensores = [];

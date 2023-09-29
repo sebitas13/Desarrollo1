@@ -10,7 +10,8 @@ const { usuarioGet,
         usuarioDelete,
         usuario_login,
         autorizar,
-        lecturaSensores
+        lecturaSensores,
+        lecturaImagenes
 } = require('../controllers/usuario.controller');
 
 const validarPostUsuarios = [
@@ -56,6 +57,6 @@ router.get('/panel',validarJWT,autorizar);
 
 router.get('/lectura-sensores',lecturaSensores);
 
-
+router.get('/lectura-imagenes',lecturaImagenes);
 
 module.exports = router;

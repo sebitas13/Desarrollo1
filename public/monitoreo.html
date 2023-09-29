@@ -27,15 +27,7 @@
             background-color: hotpink;
         }
 
-        #capturarBtn {
-            background-color: #007bff;
-        }
-
-
-        #capturarBtn:active {
-            transform: translateY(2px);
-        }
-
+    
         #toggleBtn1, #toggleBtn3 :hover {
             transform: scale(1.1);
             box-shadow: hotpink 0px 14px 28px;
@@ -50,7 +42,6 @@
         }
 
         
-
 
         .leyenda-graficas {
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) !important;
@@ -125,6 +116,30 @@
             }
         }
 
+        .gallery-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .gallery-item {
+                margin: 10px;
+            }
+
+            .pagination {
+                margin-top: 20px;
+            }
+
+            .page-number {
+                margin: 0 5px;
+                cursor: pointer;
+                color: blue;
+            }
+
+            .page-number.active {
+                font-weight: bold;
+            }
+
           
        
     </style>
@@ -173,30 +188,24 @@
           <div class="leyenda-item">
             <!-- <div class="leyenda-color" style="background-color: #6BB4D5;"></div> -->
             <div class="opcion2">
-                <span class="leyenda-texto">LIVE CAM</span>
+                <span class="leyenda-texto">MONITOREO</span>
                 <button id="toggleBtn1">OFF</button>
             </div>
-            <div class="opcion2">
+            <!-- <div class="opcion2">
                 <span class="leyenda-texto">LUZ</span>
                 <button id="toggleBtn3">OFF</button>
             </div>
             <div class="opcion2">
                 <span class="leyenda-texto">CAPTURAR</span>
                 <button id="capturarBtn">OK</button>
-            </div>
+            </div> -->
           </div>
          
         </div>
       </div>
       
       
-         
-        <!-- HTML -->
-
-        <div class="container-canvas" >
-            <canvas id="canvas" ></canvas>
-        </div>
-
+       
         <div class="container-canvas" >
             <img id="imgCapturada" alt="">
         </div>
@@ -205,6 +214,14 @@
         </canvas>
                
     </main>
+
+    <!-- PAGINACION********************* -->
+    <div class="gallery-container" id="galleryContainer">
+        <!-- Las imágenes se llenarán aquí dinámicamente -->
+    </div>
+    <div class="pagination" id="pagination">
+        <!-- Los números de página se llenarán aquí dinámicamente -->
+    </div>
 
     
     <script>
@@ -215,40 +232,36 @@
             let lateral = document.querySelector('.menu-lateral');
             let lateral_abierto = false;
 
-            var canvas = document.getElementById('canvas');
-            var ctx = canvas.getContext('2d');
+            // var canvas = document.getElementById('canvas');
+            // var ctx = canvas.getContext('2d');
 
-            // ENCENDER APAGAR CAMARA
+            // ENCENDER APAGAR MONITOREO
             let buttonState = false;
             toggleBtn1.addEventListener('click', () => {
                 buttonState = !buttonState;
                 updateUI();
                 console.log('Estado actualizado', buttonState);
-                socket.emit('buttonState', buttonState);
+                socket.emit('buttonState2', buttonState);
 
-                ctx.clearRect(0, 0, canvas.width, canvas.height);    
+                // ctx.clearRect(0, 0, canvas.width, canvas.height);    
                
             });
 
             const updateUI = () => {
                 if(buttonState){
                     toggleBtn1.classList.add('on');
-                    canvas.setAttribute('style','display:flex');
+                    // canvas.setAttribute('style','display:flex');
                     
                 }else{
                     toggleBtn1.classList.remove('on'); 
                     
-                    canvas.setAttribute('style','display:none');
-                    //canvas.setAttribute('style','border: 2px solid #00BBD4;');
-                    // canvas.setAttribute('style','background-color: black;');
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
                 }
                
                 toggleBtn1.innerText = buttonState ? 'ON' : 'OFF';
             };
 
             //Es necesario para que se actualice el boton en los otros usuarios
-            socket.on('buttonState', state => {
+            socket.on('buttonState2', state => {
               
                 buttonState = state;
                 updateUI();
@@ -256,129 +269,43 @@
             });
 
 
-            // ENCENDER APAGAR ILUMINACION MANUALMENTE
-            const toggleBtn3 = document.getElementById('toggleBtn3');
-            let buttonState3 = false;
-            toggleBtn3.addEventListener('click', () => {
-                buttonState3 = !buttonState3;
-                updateUI3();
-                console.log('Estado iluminar: ', buttonState3);
-                socket.emit('iluminar', buttonState3);
-               
-            });
-
-            const updateUI3 = () => {
-                if(buttonState3){
-                    toggleBtn3.classList.add('on');
-                    
-                }else{
-                    toggleBtn3.classList.remove('on'); 
-                }
-               
-                toggleBtn3.innerText = buttonState ? 'ON' : 'OFF';
-            };
-
-            //Es necesario para que se actualice el boton en los otros usuarios
-            socket.on('iluminar', state => {
-              
-                buttonState3 = state;
-                updateUI3();
-                console.log('Estado luz actualizado por otro usuario', state);
-            });
-
-            //ENCENDER LA LUZ EN LA OSCURIDAD
-            
-            socket.on('lecturas', (value)=> {
-
-                console.log(value);
-
-                const {
-                        temp_c,
-                        temp_f,
-                        hume,
-                        s_ter,
-                        ldr,
-                        pir,
-                        Fecha} = JSON.parse(value);   //JSON.parse(value)
-                 
-                        if(parseFloat(ldr)<100){
-                            buttonState3 = true;
-                            updateUI3();
-                            socket.emit('iluminar', buttonState3);
-                        }else{
-                            buttonState3 = false;
-                            updateUI3();
-                            socket.emit('iluminar', buttonState3);
-                        }
-                
-
-                });
-            // ---------------------
-           
-            var img = new Image();  
-            img.onload = function() { //funcion  se ejecuta cuando la imagen se carga correctamente.
-
-                    //Se define el ancho y alto del elemento de lienzo (canvas) en base a las dimensiones de la imagen cargada(img)
-                    canvas.style.width=this.width+'px'; 
-                    canvas.style.height=this.height+'px'; 
-
-                    //Para dibujar la imagen cargada (img) en el lienzo. Los parámetros especifican la imagen de origen (coordenadas x e y, ancho y alto),
-                    // así como la ubicación y el tamaño en el lienzo donde se dibujará la imagen.
-                    ctx.drawImage(this, 0, 0, this.width,this.height, 0, 0, canvas.width, canvas.height); 
-
-               
-            }
-            
-
-            socket.on('stream_to_client', function(message) {
-                
-                // Se crea un objeto Blob a partir del contenido del mensaje. 
-                //El mensaje debe contener los datos binarios de la imagen en formato JPEG. 
-                //La opción type se establece en "image/jpeg" para indicar que el Blob contiene una imagen JPEG.
-
-                var blob = new Blob([message], {type: "image/jpeg"}); 
-
-                //Se crea una referencia al objeto URL, que es una interfaz proporcionada
-                // por los navegadores para crear y gestionar URL de objetos.
-                var domURL = self.URL || self.webkitURL || self;
-                //Se utiliza el objeto URL para crear una URL de objeto a partir del Blob creado anteriormente
-                url = domURL.createObjectURL(blob);
-
-                //Se establece la propiedad src de un elemento de imagen (img) con la URL generada. 
-                ///Esto carga la imagen en el elemento de imagen y la muestra en el navegador.
-                img.src = url;	
-            });
 
             //Cada minuto se desactiva la camara por seguridad
             
-            function apagarCamaraAutomaticamente() {
+            function apagarMonitoreoAutomaticamente() {
                 console.log("Esta función se ejecuta cada minuto.");
                 buttonState = false;
                 updateUI();
                  console.log('Se termino el tiempo', buttonState);
                 //alert('Camara apagada por seguridad');
-                socket.emit('buttonState', buttonState);
-               // socket.emit('iluminar', buttonState3); luego conf
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                socket.emit('buttonState2', buttonState);
+
+                // ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
 
-            const intervalo = setInterval(apagarCamaraAutomaticamente, 120000);
+            const intervalo = setInterval(apagarMonitoreoAutomaticamente, 120000);
 
 
-            //CAPTURAR IMAGENES EN EL CLIENTE - NAVEGADOR
+        async function getData() {
+                try {
 
-            const capturarBtn = document.getElementById('capturarBtn');
-            const imgCapturada = document.querySelector('#imgCapturada');
-            capturarBtn.addEventListener('click', () => {
-                const lienzo = document.getElementById('canvas'); // Reemplaza 'canvas' con el ID de tu lienzo
-                const imagenCapturada = lienzo.toDataURL('image/jpeg'); // Captura la imagen como datos URI en formato JPEG
-                // Aquí puedes hacer algo con la imagen capturada, como mostrarla en un elemento <img> o guardarla en una variable para su posterior uso.
-                console.log(imagenCapturada); 
-                imgCapturada.src = imagenCapturada
-            });
+                const response  = await fetch('/api/usuarios/lectura-imagenes',{ method : 'GET' });
 
+                const {success,message,data} = await response.json();
+                if(!success){
+                    throw new Error('Error: '+message)
+                }
+                    return data.lecturas;
 
-           
+                } catch (error) {
+                    console.error(error)
+                    throw error;
+                } 
+            }
+
+         
+
+          
 
             function mostrarLateral(){
                   if(!lateral_abierto){
@@ -414,8 +341,57 @@
                   },2000)     
                   
               }
-      
+            
+            let arreglo_imagenes = [];
+          async  function displayGalleryPage(pageNumber) {
+            // Número de imágenes por página y total de imágenes
+            arreglo_imagenes = await getData();
+            const itemsPerPage = 10; // Por ejemplo, 10 imágenes por página
+            const totalItems = arreglo_imagenes.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
 
+            // Calcula el rango de índices para las imágenes en la página actual
+            const start = (pageNumber - 1) * itemsPerPage;
+            const end = Math.min(start + itemsPerPage, totalItems);
+
+            // Obtiene las imágenes para la página actual del arreglo
+            const images = arreglo_imagenes.slice(start, end);
+
+            // Limpia el contenedor de la galería
+            galleryContainer.innerHTML = '';
+
+            // Agrega las imágenes al contenedor de la galería
+            images.forEach((imageData, index) => {
+                const imageUrl = `data:image/jpeg;base64,${imageData}`; // Asume que imageData es una cadena de datos en formato base64 para JPEG
+                const imgElement = document.createElement('img');
+                imgElement.src = imageUrl;
+                imgElement.alt = `Imagen ${start + index + 1}`; // Números de imagen comenzando desde 1
+                imgElement.classList.add('gallery-item'); // Agrega una clase CSS si es necesario
+                galleryContainer.appendChild(imgElement);
+            });
+
+            // Actualiza la paginación
+            updatePagination(pageNumber, totalPages);
+        }
+
+        function updatePagination(currentPage, totalPages) {
+            pagination.innerHTML = ''; // Limpiar paginación
+            for (let i = 1; i <= totalPages; i++) {
+                const pageLink = document.createElement('span');
+                pageLink.textContent = i;
+                pageLink.classList.add('page-number');
+                if (i === currentPage) {
+                    pageLink.classList.add('active');
+                }
+                pageLink.addEventListener('click', () => {
+                    displayGalleryPage(i);
+                });
+                pagination.appendChild(pageLink);
+            }
+        }
+
+        // Llama a la función para mostrar la primera página al cargar la página
+        displayGalleryPage(1);
             
     </script>
 </body>
