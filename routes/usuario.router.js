@@ -10,8 +10,6 @@ const { usuarioGet,
         usuarioDelete,
         usuario_login,
         autorizar,
-        lecturaSensores,
-        lecturaImagenes
 } = require('../controllers/usuario.controller');
 
 const validarPostUsuarios = [
@@ -47,6 +45,5 @@ router.put('/:id',validarPutUsuarios,usuarioPut);
 router.delete('/:id',validarJWT,validarDeleteUsuarios,usuarioDelete);
 router.post('/login',validarLogin,usuario_login);
 router.get('/panel',validarJWT,autorizar);
-router.get('/lectura-sensores',lecturaSensores);
-router.get('/lectura-imagenes',lecturaImagenes);
+
 module.exports = router;

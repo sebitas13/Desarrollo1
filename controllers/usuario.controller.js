@@ -1,7 +1,7 @@
 const {response,query} = require('express');
 const Usuario = require('../models/usuario');
-const Sensor= require('../models/sensor');
-const Imagen= require('../models/imagen');
+
+
 const bcrypt = require('bcrypt');
 const {generarToken} = require('../helpers/jwt')
 
@@ -229,46 +229,9 @@ const autorizar = async (req=query,res=response) => {
     }
 } 
 
-const lecturaSensores = async (req=query,res=response) => {
-    try {
 
-        const lecturas = await Sensor.find({});
-        // console.log(lecturas);
-        res.status(200).json({
-            "success" : true,
-            "message" : "lecturas",
-            "data"    : lecturas
-        })
 
-    } catch (error) {
-        res.status(400).json({
-            "success" : false,
-            "message" : "Usuario no autorizado",
-            "errors" : error
-        });
-    }
-}
 
-const lecturaImagenes = async (req=query,res=response) => {
-    try {
-
-        const imagen = await Imagen.findOne({}).sort({ _id: -1 });;
-        
-        // console.log(lecturas);
-        res.status(200).json({
-            "success" : true,
-            "message" : "lecturas",
-            "data"    : imagen
-        })
-
-    } catch (error) {
-        res.status(400).json({
-            "success" : false,
-            "message" : "Usuario no autorizado",
-            "errors" : error
-        });
-    }
-}
 
 
 module.exports = {
@@ -278,6 +241,5 @@ module.exports = {
     usuarioDelete,
     usuario_login,
     autorizar,
-    lecturaSensores,
-    lecturaImagenes
+
 }

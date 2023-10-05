@@ -16,7 +16,7 @@
             background-color: aliceblue;
         }
 
-        #toggleBtn1, #toggleBtn3, #capturarBtn  {
+        #toggleBtn1, #toggleBtn3, #eliminarBtn , #actualizarBtn {
             height: 3rem;
             width: 3rem;
             border-radius: 5px;
@@ -110,7 +110,8 @@
         @media (max-width:720px){
             #toggleBtn1,
             #toggleBtn3, 
-            #capturarBtn,   
+            #eliminarBtn,
+            #actualizarBtn,   
             .leyenda-texto {
                 font-size: 0.5rem;
             }
@@ -203,11 +204,15 @@
             <!-- <div class="opcion2">
                 <span class="leyenda-texto">LUZ</span>
                 <button id="toggleBtn3">OFF</button>
+            </div> -->
+            <div class="opcion2">
+                <span class="leyenda-texto">Actualizar</span>
+                <button id="actualizarBtn">IMG</button>
             </div>
             <div class="opcion2">
-                <span class="leyenda-texto">CAPTURAR</span>
-                <button id="capturarBtn">OK</button>
-            </div> -->
+                <span class="leyenda-texto">BORRAR</span>
+                <button id="eliminarBtn">DEL</button>
+            </div>
           </div>
          
         </div>
@@ -292,32 +297,68 @@
                 // ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
 
-            const intervalo = setInterval(apagarMonitoreoAutomaticamente, 120000);
+            const intervalo = setInterval(apagarMonitoreoAutomaticamente, 1200000);
+
+
+            const eliminarBtn = document.getElementById('eliminarBtn');
+            eliminarBtn.addEventListener('click', async () => {
+                const confirmacion = confirm("¿Estas seguro?");
+                if(confirmacion){
+                    await eliminarImagenes();
+                    window.location.reload();
+                }
+                            
+            });
+
+            const actualizarBtn = document.getElementById('actualizarBtn');
+            actualizarBtn.addEventListener('click',  () => {
+                window.location.reload();
+                            
+            });
+
 
 
         let fechaIntruso;
         
-        async function getData() {
+        async function getDataImagenes() {
                 try {
 
                 const response  = await fetch('/api/usuarios/lectura-imagenes',{ method : 'GET' });
 
                 const {success,message,data} = await response.json();
                 if(!success){
+                     throw new Error('Error: '+message)
+                 
+                }
+                    if(data){
+                        fechaIntruso = data.fecha;
+                        const opciones = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
+                        document.querySelector('#intruso').textContent = new Date(fechaIntruso).toLocaleDateString(undefined,opciones);
+                        return data.lecturas;
+                    }  
+
+                } catch (error) {
+                    console.error(error)
+                    
+                } 
+            }
+
+            async function eliminarImagenes() {
+                try {
+
+                const response  = await fetch('/api/usuarios/eliminar-imagenes',{ method : 'DELETE' });
+
+                const {success,message,data} = await response.json();
+                if(!success){
                     throw new Error('Error: '+message)
                 }
-                    fechaIntruso = data.fecha;
-                    const opciones = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
-                    document.querySelector('#intruso').textContent = new Date(fechaIntruso).toLocaleDateString(undefined,opciones);
-                    return data.lecturas;
+                return message;
 
                 } catch (error) {
                     console.error(error)
                     throw error;
                 } 
             }
-
-         
 
           
 
@@ -359,41 +400,43 @@
             let arreglo_imagenes = [];
           async  function displayGalleryPage(pageNumber) {
             // Número de imágenes por página y total de imágenes
-            arreglo_imagenes = await getData();
-            const itemsPerPage = 18; // Por ejemplo, 10 imágenes por página
-            const totalItems = arreglo_imagenes.length;
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            arreglo_imagenes = await getDataImagenes();
+            if(arreglo_imagenes){
+                const itemsPerPage = 18; // Por ejemplo, 10 imágenes por página
+                const totalItems = arreglo_imagenes.length;
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-            // Calcula el rango de índices para las imágenes en la página actual
-            const start = (pageNumber - 1) * itemsPerPage;
-            const end = Math.min(start + itemsPerPage, totalItems);
+                // Calcula el rango de índices para las imágenes en la página actual
+                const start = (pageNumber - 1) * itemsPerPage;
+                const end = Math.min(start + itemsPerPage, totalItems);
 
-            // Obtiene las imágenes para la página actual del arreglo
-            const images = arreglo_imagenes.slice(start, end);
+                // Obtiene las imágenes para la página actual del arreglo
+                const images = arreglo_imagenes.slice(start, end);
 
-            // Limpia el contenedor de la galería
-            galleryContainer.innerHTML = '';
+                // Limpia el contenedor de la galería
+                galleryContainer.innerHTML = '';
 
-            // Agrega las imágenes al contenedor de la galería
-            images.forEach((imageData, index) => {
-                const imageUrl = `data:image/jpeg;base64,${imageData}`; // Asume que imageData es una cadena de datos en formato base64 para JPEG
-                const imgElement = document.createElement('img');
-                imgElement.src = imageUrl;
-                imgElement.alt = `Imagen ${start + index + 1}`; // Números de imagen comenzando desde 1
-                imgElement.classList.add('gallery-item'); // Agrega una clase CSS si es necesario
+                // Agrega las imágenes al contenedor de la galería
+                images.forEach((imageData, index) => {
+                    const imageUrl = `data:image/jpeg;base64,${imageData}`; // Asume que imageData es una cadena de datos en formato base64 para JPEG
+                    const imgElement = document.createElement('img');
+                    imgElement.src = imageUrl;
+                    imgElement.alt = `Imagen ${start + index + 1}`; // Números de imagen comenzando desde 1
+                    imgElement.classList.add('gallery-item'); // Agrega una clase CSS si es necesario
 
-                // Establece un tamaño máximo para las imágenes
-                imgElement.style.maxWidth = '200px'; 
-                imgElement.style.maxHeight = '150px'; 
-                    imgElement.addEventListener('click', () => {
-                    imgElement.classList.toggle('zoomed');
+                    // Establece un tamaño máximo para las imágenes
+                    imgElement.style.maxWidth = '200px'; 
+                    imgElement.style.maxHeight = '150px'; 
+                        imgElement.addEventListener('click', () => {
+                        imgElement.classList.toggle('zoomed');
+                    });
+
+                    galleryContainer.appendChild(imgElement);
                 });
 
-                galleryContainer.appendChild(imgElement);
-            });
-
-            // Actualiza la paginación
-            updatePagination(pageNumber, totalPages);
+                // Actualiza la paginación
+                updatePagination(pageNumber, totalPages);
+            }
         }
 
         function updatePagination(currentPage, totalPages) {

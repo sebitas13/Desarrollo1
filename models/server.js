@@ -6,13 +6,10 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const {saveSensores,simularDatos} = require('../helpers/saveSensores');
 const {saveImagenes} = require('../helpers/saveImagenes');
-const fs = require('fs');
 const Imagen = require('./imagen');
-
 var cron = require('node-cron');
-
 const {Database} = require('../database/config');
-const { log } = require('console');
+
 
 
 
@@ -63,7 +60,9 @@ class Servidor {
     }
 
     routes(){
-        this.app.use(this._usuariosPath,require('../routes/usuario.router'))
+        this.app.use(this._usuariosPath,require('../routes/sensor.router'));
+        this.app.use(this._usuariosPath,require('../routes/image.router'));
+        this.app.use(this._usuariosPath,require('../routes/usuario.router'));
     }
 
     sockets(){
@@ -73,13 +72,16 @@ class Servidor {
         this.io.on('connection',(socket)=>{
             console.log(`Conectado con el cliente ${socket.id}`)
             socket.emit('buttonState', estadoBoton);  //Si se conecta un nuevo usuario, recibe el valor del boton ya actualizado      
+            socket.emit('buttonState2', estadoMonitoreo);
             socket.emit('iluminar', estadoIluminar);
             
             
             socket.on('disconnect',()=>{
 
                 estadoBoton = false;
+              //  estadoMonitoreo = false;
                 socket.broadcast.emit('buttonState', estadoBoton);
+              //  socket.broadcast.emit('buttonState2', estadoMonitoreo);
                 console.log('Cliente desconectado');
             })
 
@@ -133,33 +135,25 @@ class Servidor {
             });
 
 
+            //Monitoreo
+
+            socket.on('monitoreo_event',function(msg){
+                console.log('imagenes del monitoreo');
+                console.log(msg.pic);
+                array_imagenes.push(msg.pic);
+
+                if(array_imagenes.length > 4){
+                    saveImagenes(array_imagenes);
+                    array_imagenes = []
+                    console.log('save images in mongodb');
+                } 
+            });
+
             //Stream
             
             socket.on('stream_event', function(msg){
-                console.log("imagen recibida del esp32cam")
-                
+                //console.log("imagen recibida del esp32cam")
                 socket.broadcast.emit('stream_to_client',msg.pic)
-                console.log(msg.pic);
-
-                // array_imagenes.push(msg.pic);
-
-                // if(array_imagenes.length > 20){
-                //     saveImagenes(array_imagenes);
-                //     array_imagenes = []
-                //     console.log('save images in mongodb');
-                // } 
-
-                // if(!estadoBoton && estadoMonitoreo){
-                //     console.log('mensaje del pir');
-                //     console.log(msg.pic);
-
-                //     array_imagenes.push(msg.pic);
-                //     if(array_imagenes.length > 10){
-                //         saveImagenes(array_imagenes);
-                //         array_imagenes = []
-                //         console.log('save in mongodb');
-                //     } 
-                // }
             });
             
             
@@ -179,6 +173,7 @@ class Servidor {
         })
 
         //Guardar la info de los sensores en la BD cada 15 minutos
+
         cron.schedule("*/15 * * * *",()=>{
             saveSensores(array_sensores);
             

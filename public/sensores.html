@@ -344,7 +344,7 @@
             var xAxis1 = chart.xAxes.push(am5xy.ValueAxis.new(root, {
               maxDeviation: 0,
               min: 0,
-              max: 160,
+              max: 100,
               strictMinMax: true,
               renderer: axisRenderer1
             }));
@@ -353,8 +353,8 @@
             // Label
             label1 = chart.seriesContainer.children.push(am5.Label.new(root, {
               fill: am5.color(0xffffff),
-              x: -100,
-              y: -60,
+              x: -70,
+              y: -80,
               width: 50,
               centerX: am5.percent(-20),
               textAlign: "center",
@@ -427,7 +427,7 @@
             var xAxis2 = chart.xAxes.push(am5xy.ValueAxis.new(root, {
               maxDeviation: 0,
               min: 0,
-              max: 240,
+              max: 100,
               strictMinMax: true,
               renderer: axisDataItemTempAndHume2
             }));
@@ -436,8 +436,8 @@
             // Label
             label2 = chart.seriesContainer.children.push(am5.Label.new(root, {
               fill: am5.color(0xffffff),
-              x: 100,
-              y: -60,
+              x: 70,
+              y: -80,
               width: 50,
               centerX: am5.percent(120),
               textAlign: "center",
@@ -592,34 +592,10 @@
               axisDataItemHume.set("value", 50);
               bullet.get("sprite").on("rotation", function () {
                 var value = axisDataItemHume.get("value");
-                label.set("text", Math.round(value).toString() + "%");
+                label.set("text", `${parseFloat(value)}` + "%");
               });
 
-              setInterval(function () {
-                var value = Math.round(Math.random() * 100);
-
-                axisDataItemHume.animate({
-                  key: "value",
-                  to: value,
-                  duration: 500,
-                  easing: am5.ease.out(am5.ease.cubic)
-                });
-
-                axisRange0.animate({
-                  key: "endValue",
-                  to: value,
-                  duration: 500,
-                  easing: am5.ease.out(am5.ease.cubic)
-                });
-
-                axisRange1.animate({
-                  key: "value",
-                  to: value,
-                  duration: 500,
-                  easing: am5.ease.out(am5.ease.cubic)
-                });
-              }, 2000);
-
+              
               chart.bulletsContainer.set("mask", undefined);
 
               var colorSet = am5.ColorSet.new(root, {});
@@ -768,11 +744,11 @@
               title: "Luz baja",
               color: "#666666",
               lowScore: 100,
-              highScore: 300
+              highScore: 200
             }, {
               title: "Luz normal",
               color: "#AAAAAA",
-              lowScore: 300,
+              lowScore: 200,
               highScore: 800
             }, {
               title: "Luz extrema",
