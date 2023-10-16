@@ -74,8 +74,6 @@ class Servidor {
             socket.emit('buttonState', estadoBoton);  //Si se conecta un nuevo usuario, recibe el valor del boton ya actualizado      
             socket.emit('buttonState2', estadoMonitoreo);
             socket.emit('iluminar', estadoIluminar);
-            
-            
             socket.on('disconnect',()=>{
 
                 estadoBoton = false;
@@ -84,10 +82,8 @@ class Servidor {
               //  socket.broadcast.emit('buttonState2', estadoMonitoreo);
                 console.log('Cliente desconectado');
             })
-
             socket.on('message',(message)=>{
                 //message['Fecha'] = (new Date().toLocaleString("es-MX", {timeZone: "America/Lima"})); //para el deploy
-
                 let date = new Date();
                 //message['Fecha'] = (new Date().toLocaleString());
                 message['Fecha'] = date.getTime();
@@ -96,80 +92,51 @@ class Servidor {
                 socket.broadcast.emit('lecturas', JSON.stringify(message));
                 console.log('Desde esp8266: '+JSON.stringify(message));
             })
-
-            
-
             socket.on('message2',(message)=>{
-                
                 //message['Fecha'] = (new Date().toLocaleString());
                 socket.broadcast.emit('lecturas2', JSON.stringify(message));
                 //socket.broadcast.emit('lecturas', message);
                 console.log('Desde esp32cam:' +JSON.stringify(message));
             })
-
-
             //Logica del boton
-
-
             socket.on('buttonState', value => {
                 console.log('buttonState:', value);
                 estadoBoton = value;
                 socket.broadcast.emit('buttonState', value); //revisar esto, para que al cambiar
                                                 //El estado del boton, lo haga para todos los usuarios
             });
-
-
             socket.on('buttonState2', value => {
                 console.log('buttonState2:', value);
                 estadoMonitoreo = value;
                 socket.broadcast.emit('buttonState2', value);
             });
-
             //Lectura de boton eliminar
-
             socket.on('iluminar', value => {
-                
-                // estadoBoton = value;
                 estadoIluminar = value;
                 socket.broadcast.emit('iluminar', value);
             });
 
-
             //Monitoreo
-
             socket.on('monitoreo_event',function(msg){
                 console.log('imagenes del monitoreo');
                 console.log(msg.pic);
-                array_imagenes.push(msg.pic);
+                const imagen = {
+                    pic: msg.pic,
+                    tiempo: new Date()
+                };
+                array_imagenes.push(imagen);
 
-                if(array_imagenes.length > 4){
+                if(array_imagenes.length > 4){ //guardar las imagenes en mongodb
                     saveImagenes(array_imagenes);
                     array_imagenes = []
                     console.log('save images in mongodb');
                 } 
             });
-
             //Stream
-            
             socket.on('stream_event', function(msg){
                 //console.log("imagen recibida del esp32cam")
                 socket.broadcast.emit('stream_to_client',msg.pic)
-            });
-            
-            
-            
-          
-            // Simulacion de envio de entrada de sensores
-            
-            // cron.schedule("*/5 * * * * *", ()=>{
-            //     console.log('Enviando tarea programada');
-            //     const obj = simularDatos();
-            //     array_sensores.push(obj);
-            //     socket.emit('lecturas',JSON.stringify(obj));
-            // });
-           
-            
-                
+            });           
         })
 
         //Guardar la info de los sensores en la BD cada 15 minutos
@@ -190,9 +157,20 @@ class Servidor {
 
 }
 
-
 module.exports = {
     Servidor
 }
 
 
+
+
+
+ // Simulacion de envio de entrada de sensores
+            
+            // cron.schedule("*/5 * * * * *", ()=>{
+            //     console.log('Enviando tarea programada');
+            //     const obj = simularDatos();
+            //     array_sensores.push(obj);
+            //     socket.emit('lecturas',JSON.stringify(obj));
+            // });
+           

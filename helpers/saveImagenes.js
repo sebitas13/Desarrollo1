@@ -13,7 +13,7 @@ const saveImagenes = async (array_imagenes) => {
             
             imagen.save();
             console.log('Nuevo');
-        }else if(imagen.lecturas.length>100 ){
+        }else if(imagen.lecturas.length>50 ){
             const imagen = new Imagen({
                 lecturas : array_imagenes,
                 fecha : new Date()

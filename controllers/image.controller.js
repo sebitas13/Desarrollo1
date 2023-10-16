@@ -4,13 +4,17 @@ const Imagen= require('../models/imagen');
 const lecturaImagenes = async (req=query,res=response) => {
     try {
 
-        const imagen = await Imagen.findOne({}).sort({ _id: -1 });;
+       // const imagen = await Imagen.findOne({}).sort({ _id: -1 });;
+        const count = await Imagen.countDocuments();
+        const pagina = req.query.page;
+        const imagen2 = await Imagen.find({}).skip(pagina-1)  // Obtener todas las imágenes
         
         // console.log(lecturas);
         res.status(200).json({
             "success" : true,
             "message" : "lecturas",
-            "data"    : imagen
+            "data"    : imagen2,
+            "numDoc" : count
         })
 
     } catch (error) {

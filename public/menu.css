@@ -29,7 +29,7 @@ body {
     align-items: center;
     /* margin: auto; */
     font-size: 1.2rem;
-    background-color: #FFFFFF; 
+    background-color: white; 
     flex-wrap: wrap;
    
 }
@@ -51,8 +51,8 @@ body {
 
     border-radius: 10px;
     background: #e0e0e0;
-    box-shadow:  15px 15px 50px #bebebe,
-             -15px -15px 50px #ffffff;
+    box-shadow:  2px 2px 10px #bebebe,
+             -2px -2px 10px #ffffff;
 }
 
 #opcion1 {
