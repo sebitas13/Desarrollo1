@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="helpers/toastr.css">
+    <link rel="stylesheet" href="menu.css">
+    <title>Menu principal</title>
+</head>
+<body>
+    <header>
+        <div onclick="mostrarLateral()" id="burger" class="burger">
+            <div class="barra top"></div>
+            <div class="barra mid"></div>
+            <div class="barra bot"></div>
+        </div>
+
+        <ul  class="menu-lateral">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Perfil de usuario</a></li>
+            <li><a href="#">Ayuda y soporte</a></li>
+            <li><a href="#">Acerca de</a></li>
+            <li><a onclick="logout()" href="#" >Cerrar Sesion</a></li>
+        </ul>
+
+        <ul class="menu">
+            <li>
+                <a id="usuario" href="#">Bienvenido Sebas</a>
+            </li>   
+            
+            <a href="menu.html"> 
+                <li class="logo-ingles">
+                    <img src="images/logo2.jpg" alt="">
+                </li>
+            </a>
+        </ul> 
+        
+        
+    </header>
+
+    <main>
+        <div class="container-menu">
+            <div class="opcion" id="opcion1">
+                <!-- <a onclick="panel_sensores()"> -->
+                <a href="sensores.html">    
+                    <img src="images/thermometer.png" alt="sensores">
+                    <div class="titulo">
+                        <p>Sensores</p>
+                    </div>
+                </a>
+            </div>
+            <div class="opcion" id="opcion2">
+                <a href="camara.html">
+                    <img src="images/cctv.png" alt="sensores">
+                    <div class="titulo">
+                        <p>Camara</p>
+                    </div>
+                </a>
+            </div>
+            <div class="opcion" id="opcion3">
+                <a href="graficas.html">
+                    <img src="images/statistics.png" alt="sensores">
+                    <div class="titulo">
+                        <p>Visualizacion</p>
+                    </div>
+                    
+                </a>
+            </div>
+            <div class="opcion" id="opcion4">
+                <a href="monitoreo.html">
+                    <img src="images/vision.png" alt="sensores">
+                    <div class="titulo">
+                        <p>Monitoreo</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="opcion" id="opcion5">
+                <a href="#">
+                    <img src="images/browser.png" alt="sensores">
+                    <div class="titulo">
+                        <p>Config</p>
+                    </div>
+                </a>
+            </div>
+            <div class="opcion" id="opcion6">
+                <a href="#" onclick="logout()">
+                    <img src="images/logout.png" alt="sensores">
+                    <p>Logout</p>
+                </a>
+            </div>
+          
+        </div>
+        <!-- <div class="container-menu">
+            
+            
+        </div> -->
+    </main>
+  
+   
+    <script src="helpers/jquery.js"></script>
+    <script src="helpers/toastr.js"></script>
+    <script>
+            const token = localStorage.getItem('token');
+            let lateral = document.querySelector('.menu-lateral');
+            let id_usuario = document.querySelector('#usuario');
+            let lateral_abierto = false;
+            let usuario;
+            autorizar_menu();
+
+            function mostrarLateral(){
+                if(!lateral_abierto){
+                    lateral.setAttribute('style','left:0px')
+                }else{
+                    lateral.setAttribute('style','left:-240px')
+                }
+                lateral_abierto = !lateral_abierto;
+            }
+
+            function logout(){
+                localStorage.removeItem('token');
+                toastr.options = {
+                    "closeButton": false,
+                    "debug": false,
+                    "newestOnTop": true,
+                    "progressBar": true,
+                    "positionClass": "toast-bottom-full-width",
+                    "preventDuplicates": true,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "2000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                }
+                toastr["info"]("Cerrando sesión", "Logout")
+                setTimeout(()=>{
+                    window.location.href = 'index.html';
+                },2000)     
+                
+            }
+            
+            async function autorizar_menu(){
+                fetch('/api/usuarios/panel',{
+                    method : 'GET',
+                    headers : {
+                        'Content-Type': 'application/json',
+                        'authorization' : `${token}`
+                    },
+                })
+                .then(response => response.json())
+                .then(respuesta=>{
+                    
+                    if(!respuesta.success){
+                        window.location.href = 'index.html';
+                    }else{
+                        usuario = respuesta.data.correo;
+                        id_usuario.textContent = `Usuario: ${usuario} `;
+                            toastr.options = {
+                            "closeButton": true,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-full-width",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": "300",
+                            "hideDuration": "1000",
+                            "timeOut": "2000",
+                            "extendedTimeOut": "1000",
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        }
+                        toastr["success"](`Bienvenido ${usuario}`, "Bienvienido");
+                    }
+
+                    
+                    
+                    
+                }).catch(error=>{
+                    console.error(error);
+                })
+            }
+
+
+           
+           
+            
+            
+       
+    </script>
+     
+      
+</body>
+</html>

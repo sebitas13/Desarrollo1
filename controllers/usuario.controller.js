@@ -1,5 +1,7 @@
 const {response,query} = require('express');
 const Usuario = require('../models/usuario');
+
+
 const bcrypt = require('bcrypt');
 const {generarToken} = require('../helpers/jwt')
 
@@ -31,9 +33,9 @@ const usuarioGet = async (req=query,res=response) => {
 } 
 
 const usuarioPost = async (req=query,res=response) => {
-
+    
     const {nombre,correo,password} = req.body;
-
+    
     try {
         const usuario = new Usuario({
             nombre : nombre,
@@ -47,7 +49,7 @@ const usuarioPost = async (req=query,res=response) => {
                 //console.error('Error al generar el hash de la contraseña:', err);
                 res.status(400).json({
                     "success": false,
-                    "mensaje":'Error server hash',
+                    "message":'Error server hash',
                     "errors":err
                 });
                 return;
@@ -157,11 +159,17 @@ const usuario_login = async (req=query,res=response) => {
         const usuario = await Usuario.findOne({correo:correo});
 
         if(!usuario){
-            return res.status(400).json({msg : 'Correo no existe'})
+            return res.status(400).json({
+                "success" : false,
+                "message" : "Correo no existe"
+            })
         }
     
         if(!usuario.estado){
-            return res.status(400).json({msg : 'Estado : false'}) //HTTP 400 Bad Request
+            return res.status(400).json({
+                "success" : false,
+                "message" : "El usuario esta dado de baja"
+            }) //HTTP 400 Bad Request
         }
     
         bcrypt.compare(password,usuario.password,async (err,isMatch)=> {
@@ -199,11 +207,36 @@ const usuario_login = async (req=query,res=response) => {
 
 }
 
+const autorizar = async (req=query,res=response) => {
+   
+    
+    try {
+        res.status(200).json({ //204
+            "success" : true,
+            "message" : "Usuario autorizado",
+            "data"    : req.usuario
+            
+        })
+    } catch (error) {
+        res.status(400).json({
+            "success" : false,
+            "message" : "Usuario no autorizado",
+            "errors" : error
+        });
+    }
+} 
+
+
+
+
+
 
 module.exports = {
     usuarioGet,
     usuarioPost,
     usuarioPut,
     usuarioDelete,
-    usuario_login
+    usuario_login,
+    autorizar,
+
 }

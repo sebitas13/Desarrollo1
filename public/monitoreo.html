@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor de temperatura</title>
+    <link rel='stylesheet' href='https://unpkg.com/bulma@0.9.1/css/bulma.min.css'>
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+
+    <link rel="stylesheet" href="menu.css">
+    <style>
+
+        body {
+            background-color: aliceblue;
+        }
+
+        #toggleBtn1, #toggleBtn3, #eliminarBtn , #actualizarBtn {
+            height: 3rem;
+            width: 3rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #fff;
+            background-color: hotpink;
+        }
+
+    
+        #toggleBtn1, #toggleBtn3 :hover {
+            transform: scale(1.1);
+            box-shadow: hotpink 0px 14px 28px;
+        }
+
+        #toggleBtn1.on, #toggleBtn3.on {
+            background-color: mediumaquamarine;
+        }
+
+        #toggleBtn1.on, #toggleBtn3.on:hover {
+            box-shadow: mediumaquamarine 0px 14px 28px;
+        }
+
+        
+
+        .leyenda-graficas {
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) !important;
+          background-color: rgba(0, 187, 212);
+          border: 1px solid #ccc;
+          padding: 10px;
+         
+          border-radius: 5px;
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Estilos para cada elemento de la leyenda */
+        .leyenda-item {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        /* Estilos para el cuadro de color de la leyenda */
+        .leyenda-color {
+          width: 20px;
+          height: 20px;
+          margin-right: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+
+        /* Estilos para el texto de la leyenda */
+        .leyenda-texto {
+          font-size: 1rem;
+          color: aliceblue;
+          margin-right: 1rem;
+        }
+
+        .container-canvas {
+            overflow: auto;
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+            
+        }
+
+        #canvas {
+            width: 640px;
+            height: 480px;
+            display: flex;
+            /* border: 1px solid #00BBD4; */
+            margin: auto;
+            margin-bottom: 1rem;
+            
+        }
+
+        .opcion2 {
+            margin: 1rem 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #imgCapturada {
+            text-align: center;
+        }
+
+        @media (max-width:720px){
+            #toggleBtn1,
+            #toggleBtn3, 
+            #eliminarBtn,
+            #actualizarBtn,   
+            .leyenda-texto {
+                font-size: 0.5rem;
+            }
+
+            .opcion2 {
+                margin: 0;
+            }
+
+        }
+        /* GALERIA DE IMAGENES******* */
+         .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .gallery-item {
+            max-width: 200px;
+            max-height: 150px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+       
+
+        .page-number {
+            margin: 0 10px;
+            cursor: pointer;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .page-number.active {
+            color: blue;
+        }
+
+        .img-zoomed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: contain;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .img-zoomed img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center; 
+            margin: 10px; 
+            cursor: pointer;
+        }
+
+        
+        .timestamp {
+            margin-top: 5px; 
+            font-size: 14px; 
+        }
+
+          
+       
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    
+    <header>
+        <div onclick="mostrarLateral()" id="burger" class="burger">
+            <div class="barra top"></div>
+            <div class="barra mid"></div>
+            <div class="barra bot"></div>
+        </div>
+
+        <ul  class="menu-lateral">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Perfil de usuario</a></li>
+            <li><a href="#">Ayuda y soporte</a></li>
+            <li><a href="#">Acerca de</a></li>
+            <li><a onclick="logout()" href="#" >Cerrar Sesion</a></li>
+        </ul>
+
+        <ul class="menu">
+            
+            
+           
+            <li>
+                <a href="#">Bienvenido Sebas</a>
+            </li>   
+            
+            <a href="menu.html"> 
+                <li class="logo-ingles">
+                    <img src="images/logo2.jpg" alt="">
+                </li>
+            </a>
+        </ul> 
+        
+        
+    </header>
+
+    <main>
+
+      <div>
+        <div class="leyenda-graficas">
+            
+          <div class="leyenda-item">
+            <!-- <div class="leyenda-color" style="background-color: #6BB4D5;"></div> -->
+            <div class="opcion2">
+                <span class="leyenda-texto">MONITOREO</span>
+                <button id="toggleBtn1">OFF</button>
+            </div>
+            <!-- <div class="opcion2">
+                <span class="leyenda-texto">LUZ</span>
+                <button id="toggleBtn3">OFF</button>
+            </div> -->
+            <div class="opcion2">
+                <span class="leyenda-texto">Actualizar</span>
+                <button id="actualizarBtn">IMG</button>
+            </div>
+            <div class="opcion2">
+                <span class="leyenda-texto">BORRAR</span>
+                <button id="eliminarBtn">DEL</button>
+            </div>
+          </div>
+         
+        </div>
+      </div>
+      
+      
+       
+        <div class="container-canvas" >
+            <img id="imgCapturada" alt="">
+            <div id="intruso">Fecha</div>
+        </div>
+        
+
+               
+    </main>
+
+    <!-- PAGINACION********************* -->
+    <div class="gallery-container" id="galleryContainer">
+        <!-- Las imágenes se llenarán aquí dinámicamente -->
+    </div>
+    <div class="pagination" id="pagination">
+        <!-- Los números de página se llenarán aquí dinámicamente -->
+    </div>
+
+    
+    <script>
+
+            const socket = io();
+            const toggleBtn1 = document.getElementById('toggleBtn1');
+            
+            let lateral = document.querySelector('.menu-lateral');
+            let lateral_abierto = false;
+
+            // var canvas = document.getElementById('canvas');
+            // var ctx = canvas.getContext('2d');
+
+            // ENCENDER APAGAR MONITOREO
+            let buttonState = false;
+            toggleBtn1.addEventListener('click', () => {
+                buttonState = !buttonState;
+                updateUI();
+                console.log('Estado actualizado', buttonState);
+                socket.emit('buttonState2', buttonState);
+
+                // ctx.clearRect(0, 0, canvas.width, canvas.height);    
+               
+            });
+
+            const updateUI = () => {
+                if(buttonState){
+                    toggleBtn1.classList.add('on');
+                    // canvas.setAttribute('style','display:flex');
+                    
+                }else{
+                    toggleBtn1.classList.remove('on'); 
+                    
+                }
+               
+                toggleBtn1.innerText = buttonState ? 'ON' : 'OFF';
+            };
+
+            //Es necesario para que se actualice el boton en los otros usuarios
+            socket.on('buttonState2', state => {
+              
+                buttonState = state;
+                updateUI();
+                console.log('Estado actualizado por otro usuario', state);
+            });
+
+
+
+            //Cada minuto se desactiva la camara por seguridad
+            
+            function apagarMonitoreoAutomaticamente() {
+                console.log("Esta función se ejecuta cada minuto.");
+                buttonState = false;
+                updateUI();
+                 console.log('Se termino el tiempo', buttonState);
+                //alert('Camara apagada por seguridad');
+                socket.emit('buttonState2', buttonState);
+
+                // ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+
+            setInterval(apagarMonitoreoAutomaticamente, 1200000);
+
+
+            const eliminarBtn = document.getElementById('eliminarBtn');
+            eliminarBtn.addEventListener('click', async () => {
+                const confirmacion = confirm("¿Estas seguro?");
+                if(confirmacion){
+                    await eliminarImagenes();
+                    window.location.reload();
+                }
+                            
+            });
+
+            const actualizarBtn = document.getElementById('actualizarBtn');
+            actualizarBtn.addEventListener('click',  () => {
+                window.location.reload();
+                            
+            });
+
+
+
+        let fechaIntruso;
+        let numeroDocumentos=0;
+        async function getDataImagenes(page) {
+                try {
+
+                const response  = await fetch(`/api/usuarios/lectura-imagenes?page=${page}`,{ method : 'GET' });
+                    
+                const {success,message,data,numDoc} = await response.json();
+                let imagenes = data[0];
+                numeroDocumentos = numDoc;
+                if(!success){
+                     throw new Error('Error: '+message)
+                    
+                }
+                    if(imagenes){
+                        
+                        
+                        fechaIntruso = imagenes.fecha;
+                        const opciones = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
+                        document.querySelector('#intruso').textContent = new Date(fechaIntruso).toLocaleDateString(undefined,opciones);
+                        return imagenes.lecturas;
+                    }  
+
+                } catch (error) {
+                    console.error(error)
+                    
+                } 
+            }
+
+            async function eliminarImagenes() {
+                try {
+
+                const response  = await fetch('/api/usuarios/eliminar-imagenes',{ method : 'DELETE' });
+
+                const {success,message,data} = await response.json();
+                if(!success){
+                    throw new Error('Error: '+message)
+                }
+                return message;
+
+                } catch (error) {
+                    console.error(error)
+                    throw error;
+                } 
+            }
+
+          
+
+            function mostrarLateral(){
+                  if(!lateral_abierto){
+                      lateral.setAttribute('style','left:0px')
+                  }else{
+                      lateral.setAttribute('style','left:-240px')
+                  }
+                  lateral_abierto = !lateral_abierto;
+      }
+
+            function logout(){
+                  localStorage.removeItem('token');
+                  toastr.options = {
+                      "closeButton": false,
+                      "debug": false,
+                      "newestOnTop": true,
+                      "progressBar": true,
+                      "positionClass": "toast-bottom-full-width",
+                      "preventDuplicates": true,
+                      "onclick": null,
+                      "showDuration": "300",
+                      "hideDuration": "1000",
+                      "timeOut": "2000",
+                      "extendedTimeOut": "1000",
+                      "showEasing": "swing",
+                      "hideEasing": "linear",
+                      "showMethod": "fadeIn",
+                      "hideMethod": "fadeOut"
+                  }
+                  toastr["info"]("Cerrando sesión", "Logout")
+                  setTimeout(()=>{
+                      window.location.href = 'index.html';
+                  },2000)     
+                  
+              }
+            
+
+            let currentPage = 1; 
+            let arreglo_imagenes = [];
+            async function displayGalleryPage(pageNumber) {
+    try {
+        // Obtiene todos los documentos
+        const arreglo_imagenes = await getDataImagenes(pageNumber);
+
+        // Limpia el contenedor de la galería
+        galleryContainer.innerHTML = '';
+
+        // Agrega las imágenes al contenedor de la galería
+        if(arreglo_imagenes){
+            arreglo_imagenes.forEach((imageData, index) => {
+            const imageUrl = `data:image/jpeg;base64,${imageData.pic}`;
+            const imgElement = document.createElement('img');
+            imgElement.src = imageUrl;
+            imgElement.alt = `Imagen ${index + 1}`; // Números de imagen comenzando desde 1
+            imgElement.classList.add('gallery-item'); 
+            
+            // Se establece un tamaño máximo para las imágenes
+            imgElement.style.maxWidth = '200px';
+            imgElement.style.maxHeight = '150px';
+
+            // Se crea un elemento para mostrar el tiempo
+            const timestampElement = document.createElement('span');
+            timestampElement.textContent = `Tiempo: ${new Date(imageData.tiempo).toLocaleString()}`;
+            timestampElement.classList.add('timestamp'); // Puedes agregar estilos CSS según sea necesario
+
+            // Se crea un contenedor para la imagen y su marca de tiempo
+            const container = document.createElement('div');
+            container.classList.add('image-container');
+            container.appendChild(imgElement);
+            container.appendChild(timestampElement);
+
+            galleryContainer.appendChild(container);
+        });
+
+        }
+        currentPage = pageNumber;
+
+        updatePagination(numeroDocumentos)
+    } catch (error) {
+        console.error('Error al mostrar los documentos:', error);
+    }
+}
+
+
+function updatePagination(totalPages) {
+    pagination.innerHTML = ''; // Limpiar paginación
+    for (let i = 1; i <= totalPages; i++) {
+        const pageLink = document.createElement('span');
+        pageLink.textContent = i;
+        pageLink.classList.add('page-number');
+        if (i === currentPage) {
+            pageLink.classList.add('active');
+        }
+        pageLink.addEventListener('click', () => {
+            displayGalleryPage(i);
+        });
+        pagination.appendChild(pageLink);
+    }
+}
+
+
+galleryContainer.addEventListener('click', function(event) {
+    const target = event.target;
+    if (target.classList.contains('gallery-item')) {
+        const imageUrl = target.src;
+        
+        // Crear un elemento de la imagen ampliada
+        const zoomedImage = document.createElement('div');
+        zoomedImage.classList.add('img-zoomed');
+        const imgElement = document.createElement('img');
+        imgElement.src = imageUrl;
+        zoomedImage.appendChild(imgElement);
+
+        // Agregar el elemento de imagen ampliada al cuerpo del documento
+        document.body.appendChild(zoomedImage);
+
+        // Para salir del modo de zoom 
+        zoomedImage.addEventListener('click', function() {
+            zoomedImage.remove(); // Elimina la imagen ampliada del DOM
+        });
+    }
+});
+
+
+        // Mostrar la primera página al cargar la página
+        displayGalleryPage(1);
+
+        setInterval(function() {
+            displayGalleryPage(currentPage);
+            console.log("actualizando images");
+        }, 5000); 
+            
+    </script>
+</body>
+</html>

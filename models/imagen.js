@@ -1,11 +1,10 @@
 
 const mongoose = require('mongoose');
-
-const sensorSchema = mongoose.Schema({
+const imagenSchema = mongoose.Schema({
 
     name : {
         type : String,
-        default : 'sensores'
+        default : 'imagenes'
     },
     lecturas : [],
 
@@ -15,7 +14,6 @@ const sensorSchema = mongoose.Schema({
     }
 });
 
+const Imagen = mongoose.model('Imagen',imagenSchema);
+module.exports = Imagen
 
-const Sensor = mongoose.model('Sensor',sensorSchema);
-
-module.exports = Sensor
