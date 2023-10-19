@@ -280,23 +280,20 @@
             let lateral = document.querySelector('.menu-lateral');
             let lateral_abierto = false;
 
-            // var canvas = document.getElementById('canvas');
-            // var ctx = canvas.getContext('2d');
-
             // ENCENDER APAGAR MONITOREO
-            let buttonState = false;
+            let monitoreoState = false;
             toggleBtn1.addEventListener('click', () => {
-                buttonState = !buttonState;
+                monitoreoState = !monitoreoState;
                 updateUI();
-                console.log('Estado actualizado', buttonState);
-                socket.emit('buttonState2', buttonState);
+                console.log('Estado actualizado', monitoreoState);
+                socket.emit('monitoreoState', monitoreoState);
 
                 // ctx.clearRect(0, 0, canvas.width, canvas.height);    
                
             });
 
             const updateUI = () => {
-                if(buttonState){
+                if(monitoreoState){
                     toggleBtn1.classList.add('on');
                     // canvas.setAttribute('style','display:flex');
                     
@@ -305,13 +302,13 @@
                     
                 }
                
-                toggleBtn1.innerText = buttonState ? 'ON' : 'OFF';
+                toggleBtn1.innerText = monitoreoState ? 'ON' : 'OFF';
             };
 
             //Es necesario para que se actualice el boton en los otros usuarios
-            socket.on('buttonState2', state => {
+            socket.on('monitoreoState', state => {
               
-                buttonState = state;
+                monitoreoState = state;
                 updateUI();
                 console.log('Estado actualizado por otro usuario', state);
             });
@@ -322,11 +319,11 @@
             
             function apagarMonitoreoAutomaticamente() {
                 console.log("Esta función se ejecuta cada minuto.");
-                buttonState = false;
+                monitoreoState = false;
                 updateUI();
-                 console.log('Se termino el tiempo', buttonState);
+                 console.log('Se termino el tiempo', monitoreoState);
                 //alert('Camara apagada por seguridad');
-                socket.emit('buttonState2', buttonState);
+                socket.emit('monitoreoState', monitoreoState);
 
                 // ctx.clearRect(0, 0, canvas.width, canvas.height);
             }

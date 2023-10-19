@@ -219,19 +219,19 @@
             var ctx = canvas.getContext('2d');
 
             // ENCENDER APAGAR CAMARA
-            let buttonState = false;
+            let camaraState = false;
             toggleBtn1.addEventListener('click', () => {
-                buttonState = !buttonState;
+                camaraState = !camaraState;
                 updateUI();
-                console.log('Estado actualizado', buttonState);
-                socket.emit('buttonState', buttonState);
+                console.log('Estado actualizado', camaraState);
+                socket.emit('camaraState', camaraState);
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);    
                
             });
 
             const updateUI = () => {
-                if(buttonState){
+                if(camaraState){
                     toggleBtn1.classList.add('on');
                     canvas.setAttribute('style','display:flex');
                     
@@ -239,18 +239,16 @@
                     toggleBtn1.classList.remove('on'); 
                     
                     canvas.setAttribute('style','display:none');
-                    //canvas.setAttribute('style','border: 2px solid #00BBD4;');
-                    // canvas.setAttribute('style','background-color: black;');
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                 }
                
-                toggleBtn1.innerText = buttonState ? 'ON' : 'OFF';
+                toggleBtn1.innerText = camaraState ? 'ON' : 'OFF';
             };
 
             //Es necesario para que se actualice el boton en los otros usuarios
-            socket.on('buttonState', state => {
+            socket.on('camaraState', state => {
               
-                buttonState = state;
+                camaraState = state;
                 updateUI();
                 console.log('Estado actualizado por otro usuario', state);
             });
@@ -258,30 +256,30 @@
 
             // ENCENDER APAGAR ILUMINACION MANUALMENTE
             const toggleBtn3 = document.getElementById('toggleBtn3');
-            let buttonState3 = false;
+            let iluminarState = false;
             toggleBtn3.addEventListener('click', () => {
-                buttonState3 = !buttonState3;
+                iluminarState = !iluminarState;
                 updateUI3();
-                console.log('Estado iluminar: ', buttonState3);
-                socket.emit('iluminar', buttonState3);
+                console.log('Estado iluminar: ', iluminarState);
+                socket.emit('iluminarState', iluminarState);
                
             });
 
             const updateUI3 = () => {
-                if(buttonState3){
+                if(iluminarState){
                     toggleBtn3.classList.add('on');
                     
                 }else{
                     toggleBtn3.classList.remove('on'); 
                 }
                
-                toggleBtn3.innerText = buttonState ? 'ON' : 'OFF';
+                toggleBtn3.innerText = iluminarState ? 'ON' : 'OFF';
             };
 
             //Es necesario para que se actualice el boton en los otros usuarios
-            socket.on('iluminar', state => {
+            socket.on('iluminarState', state => {
               
-                buttonState3 = state;
+                iluminarState = state;
                 updateUI3();
                 console.log('Estado luz actualizado por otro usuario', state);
             });
@@ -349,16 +347,13 @@
                 img.src = url;	
             });
 
-            //Cada minuto se desactiva la camara por seguridad
+            //Cada dos minutos se desactiva la camara por seguridad
             
             function apagarCamaraAutomaticamente() {
-                console.log("Esta función se ejecuta cada minuto.");
-                buttonState = false;
+                camaraState = false;
                 updateUI();
-                 console.log('Se termino el tiempo', buttonState);
-                //alert('Camara apagada por seguridad');
-                socket.emit('buttonState', buttonState);
-               // socket.emit('iluminar', buttonState3); luego conf
+                console.log('Se termino el tiempo', camaraState);
+                socket.emit('camaraState', camaraState);
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
 
@@ -370,9 +365,8 @@
             const capturarBtn = document.getElementById('capturarBtn');
             const imgCapturada = document.querySelector('#imgCapturada');
             capturarBtn.addEventListener('click', () => {
-                const lienzo = document.getElementById('canvas'); // Reemplaza 'canvas' con el ID de tu lienzo
-                const imagenCapturada = lienzo.toDataURL('image/jpeg'); // Captura la imagen como datos URI en formato JPEG
-                // Aquí puedes hacer algo con la imagen capturada, como mostrarla en un elemento <img> o guardarla en una variable para su posterior uso.
+                const lienzo = document.getElementById('canvas'); 
+                const imagenCapturada = lienzo.toDataURL('image/jpeg');
                 console.log(imagenCapturada); 
                 imgCapturada.src = imagenCapturada
             });
@@ -387,7 +381,7 @@
                       lateral.setAttribute('style','left:-240px')
                   }
                   lateral_abierto = !lateral_abierto;
-      }
+            }
 
             function logout(){
                   localStorage.removeItem('token');

@@ -1,34 +1,9 @@
 const Sensor = require('../models/sensor');
-
+var cron = require('node-cron');
 
 const saveSensores = async (array_sensores) => {
     try {
-        // const sensor = await Sensor.find({});
-        // console.log(sensor)
-        // if(sensor.length === 0){
-        //     const sensor = new Sensor({
-        //         lecturas : [],
-        //         fecha : new Date()
-        //     })
-            
-        //     sensor.save();
-        //     console.log('creado');
-            
-        // }else{
-        //     const sensor = await Sensor
-        //     .findOneAndUpdate({name : 'sensores'},
-        //     {
-        //         lecturas : array_sensores,
-        //         fecha : new Date()
-        //     },
-        //     { new: true ,
-        //         upsert: true, // Crea el documento si no existe
-        //         setDefaultsOnInsert: true
-        //     }
-        //     )
-            
-        //     console.log('sensores actualizado :',sensor);
-        // }  
+       
         const sensor = await Sensor
             .findOneAndUpdate({name : 'sensores'},
             {
@@ -66,8 +41,27 @@ const simularDatos = ()=>{
      }
 }
 
+const sendSensorSimulated = () => {
+        cron.schedule("*/5 * * * * *", ()=>{
+                console.log('Enviando tarea programada');
+                const obj = simularDatos();
+               // array_sensores.push(obj); para usar con saveSensorsCron
+                socket.emit('lecturas',JSON.stringify(obj));
+         });
+}
+
+const saveSensorsCronMongo = (array_sensores) => {
+        
+        cron.schedule("*/15 * * * *",()=>{
+            saveSensores(array_sensores);
+            console.log('save in mongodb');
+        });
+}
+
 
 module.exports = {
     saveSensores,
-    simularDatos
+    simularDatos,
+    saveSensorsCronMongo,
+    sendSensorSimulated
 }

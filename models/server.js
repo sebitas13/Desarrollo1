@@ -1,46 +1,39 @@
 
 const express = require('express');
-const {createServer} = require('http');
-const {Server} = require('socket.io');
+const {createServer} = require('http'); //función proporcionada por Node.js para crear un servidor HTTP.
+const {Server} = require('socket.io'); 
 const cors = require('cors');
-const bodyParser = require('body-parser');
-const {saveSensores,simularDatos} = require('../helpers/saveSensores');
-const {saveImagenes} = require('../helpers/saveImagenes');
-const Imagen = require('./imagen');
-var cron = require('node-cron');
+const {simularDatos,saveSensorsCronMongo} = require('../helpers/saveSensores');
+const {saveImagesMongo} = require('../helpers/saveImagenes');
+//var cron = require('node-cron');
 const {Database} = require('../database/config');
-
-
-
 
 let array_sensores = [];
 let array_imagenes = [];
 class Servidor {
 
-
     constructor(){
-        //Creamos una función de controlador de solicitudes
-        //Diseñada específicamente para ser un oyente de solicitud http 
-        //al que se le pasan los argumentos (req, res)de una solicitud http entrante
-        this.app = express();
+
+        //app instancia del Servidor HTTP de Express
+        this.app = express(); 
         //Esteblecemos el puerto a partir de las variables de entorno
-        this.port = process.env.PORT;
-        //CreateServer recibe la funcion requestlistener el cual se va llamar cada vez que el servidor reciba una solicitud
-        //En este caso le enviamos nuestro app de express
-        this.server = createServer(this.app); //retorna una instancia de http server
+        this.port = process.env.PORT; 
+        //Se crea un servidor HTTP utilizando createServer, usando el servidor Express como manejador de solicitudes
+        //Para tener un mayor control sobre el servidor de express.
+        this.server = createServer(this.app); 
+        //El servidor WebSocket utiliza el mismo this.server como servidor HTTP
+        //Ambos (Express.js y socket.io) comparten el mismo servidor HTTP.
+        //Se configura el cors para permitir solicitudes desde cualquier origen (*).
+        this.io = new Server(this.server,{cors : {origin : '*'}}); 
 
-        this.io = new Server(this.server,{cors : {origin : '*'}});
+        //Un solo servidor HTTP maneja tanto las solicitudes HTTP para la apliacion Express.js 
+        //como las conexiones WebSocket para la aplicación de tiempo real mediante socket.io
 
-      
-
-        
-        
         this._usuariosPath = '/api/usuarios'
         
         this.conexionDB();
         this.middlewares();
         this.routes();
-
         this.sockets();
         
     }
@@ -51,12 +44,16 @@ class Servidor {
 
     middlewares(){
 
-        //this.app.use(bodyParser.urlencoded({ extended: false })) //ya no es neceario el body-parser
-        this.app.use(express.urlencoded({ extended: true })); //Middleware para analizar datos de formularios codificados
-        this.app.use(express.json()); //para analizar el cuerpo de las solicitudes entrantes en formato JSON
+        //Analiza el cuerpo de las solicitudes entrantes de formularios codificados y los convierte en objetos JS
+        //extended: true, si se espera recibir datos de formularios complejos con objetos anidados o arreglos
+        this.app.use(express.urlencoded({ extended: true }));
+        //Analiza el cuerpo de las solicitudes entrantes en formato JSON desde el cliente y los convierte en objetos JS
+        this.app.use(express.json());
+        //Habilita el intercambio de recursos entre diferentes dominios (CORS). 
         this.app.use(cors());
+        //Sirve archivos estáticos (HTML,CSS,JS) desde el directorio 'public'. Cuando una solicitud al llega servidor para un archivo estático
         this.app.use(express.static('public'));
-
+        
     }
 
     routes(){
@@ -66,22 +63,24 @@ class Servidor {
     }
 
     sockets(){
-        let estadoBoton = false;
+        let estadoCamara = false;
         let estadoMonitoreo = false;
         let estadoIluminar = false;
         this.io.on('connection',(socket)=>{
+
             console.log(`Conectado con el cliente ${socket.id}`)
-            socket.emit('buttonState', estadoBoton);  //Si se conecta un nuevo usuario, recibe el valor del boton ya actualizado      
-            socket.emit('buttonState2', estadoMonitoreo);
-            socket.emit('iluminar', estadoIluminar);
+            //Al conectarse un usuario, reciben el estado actual de los botones
+            socket.emit('camaraState', estadoCamara); 
+            socket.emit('monitoreoState', estadoMonitoreo);
+            socket.emit('iluminarState', estadoIluminar);
             
             
             socket.on('disconnect',()=>{
 
-                estadoBoton = false;
-              //  estadoMonitoreo = false;
-                socket.broadcast.emit('buttonState', estadoBoton);
-              //  socket.broadcast.emit('buttonState2', estadoMonitoreo);
+                estadoCamara = false;
+                socket.broadcast.emit('camaraState', estadoCamara);
+              //  estadoMonitoreo = false; No es conveniente desactivarlo si esta monitoreando
+              //  socket.broadcast.emit('monitoreoState', estadoMonitoreo);
                 console.log('Cliente desconectado');
             })
 
@@ -92,93 +91,80 @@ class Servidor {
                 //message['Fecha'] = (new Date().toLocaleString());
                 message['Fecha'] = date.getTime();
                 message['Fecha_d'] = date;
-                array_sensores.push(message)    ;                                   //Activar cuando se desea guardar en la BD
+                /*********************SAVE SENSORS LECTURES**********************************************/
+                //array_sensores.push(message) ; //Activar cuando se desea guardar en la BD
                 socket.broadcast.emit('lecturas', JSON.stringify(message));
                 console.log('Desde esp8266: '+JSON.stringify(message));
             })
 
-            
-
-            socket.on('message2',(message)=>{
+            // socket.on('message2',(message)=>{
                 
-                //message['Fecha'] = (new Date().toLocaleString());
-                socket.broadcast.emit('lecturas2', JSON.stringify(message));
-                //socket.broadcast.emit('lecturas', message);
-                console.log('Desde esp32cam:' +JSON.stringify(message));
-            })
+            //     //message['Fecha'] = (new Date().toLocaleString());
+            //     socket.broadcast.emit('lecturas2', JSON.stringify(message));
+            //     //socket.broadcast.emit('lecturas', message);
+            //     console.log('Desde esp32cam:' +JSON.stringify(message));
+            // })
 
 
-            //Logica del boton
+            /****************** LECTURA  ******************/
 
-
-            socket.on('buttonState', value => {
-                console.log('buttonState:', value);
-                estadoBoton = value;
-                socket.broadcast.emit('buttonState', value); //revisar esto, para que al cambiar
-                                                //El estado del boton, lo haga para todos los usuarios
+            socket.on('camaraState', value => {
+                console.log('camaraState:', value);
+                estadoCamara = value;
+                socket.broadcast.emit('camaraState', value); //revisar esto, para que al cambiar
+                                //El estado del boton, lo haga para todos los usuarios
             });
 
-
-            socket.on('buttonState2', value => {
-                console.log('buttonState2:', value);
+            socket.on('monitoreoState', value => {
+                console.log('monitoreoState:', value);
                 estadoMonitoreo = value;
-                socket.broadcast.emit('buttonState2', value);
+                socket.broadcast.emit('monitoreoState', value);
             });
 
-            //Lectura de boton eliminar
-
-            socket.on('iluminar', value => {
-                
-                // estadoBoton = value;
+            socket.on('iluminarState', value => {
                 estadoIluminar = value;
-                socket.broadcast.emit('iluminar', value);
+                socket.broadcast.emit('iluminarState', value);
             });
 
 
-            //Monitoreo
+            //EVENTO DEL MONITOREO
 
             socket.on('monitoreo_event',function(msg){
                 console.log('imagenes del monitoreo');
                 console.log(msg.pic);
-                array_imagenes.push(msg.pic);
 
-                if(array_imagenes.length > 4){
-                    saveImagenes(array_imagenes);
-                    array_imagenes = []
-                    console.log('save images in mongodb');
-                } 
+                /*********************SAVE IMAGENES******************************/
+                array_imagenes.push(msg.pic);
+                saveImagesMongo(array_imagenes);
+
+                // if(array_imagenes.length > 4){
+                //     saveImagenes(array_imagenes);
+                //     array_imagenes = []
+                //     console.log('save images in mongodb');
+                // } 
             });
 
-            //Stream
+            //EVENTO DEL STREAM
             
             socket.on('stream_event', function(msg){
                 //console.log("imagen recibida del esp32cam")
                 socket.broadcast.emit('stream_to_client',msg.pic)
             });
             
-            
-            
           
-            // Simulacion de envio de entrada de sensores
-            
-            // cron.schedule("*/5 * * * * *", ()=>{
-            //     console.log('Enviando tarea programada');
-            //     const obj = simularDatos();
-            //     array_sensores.push(obj);
-            //     socket.emit('lecturas',JSON.stringify(obj));
-            // });
-           
-            
-                
+            /*********************SAVE SENSOR IN MONGO******************************/
+            saveSensorsCronMongo(array_sensores);
         })
+
+        //sendSensorSimulated();
 
         //Guardar la info de los sensores en la BD cada 15 minutos
 
-        cron.schedule("*/15 * * * *",()=>{
-            saveSensores(array_sensores);
+        // cron.schedule("*/15 * * * *",()=>{
+        //     saveSensores(array_sensores);
             
-            console.log('save in mongodb');
-        })
+        //     console.log('save in mongodb');
+        // })
         
     }
 

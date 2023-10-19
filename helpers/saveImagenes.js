@@ -40,10 +40,19 @@ const saveImagenes = async (array_imagenes) => {
     }
 }
 
+const saveImagesMongo = (array_imagenes) => {
+
+        
+        if(array_imagenes.length > 4){
+             saveImagenes(array_imagenes);
+             array_imagenes.length = 0;
+             console.log('save images in mongodb');
+        } 
+}
 
 
 
 module.exports = {
     saveImagenes,
-    
+    saveImagesMongo
 }
