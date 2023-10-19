@@ -1,5 +1,5 @@
 const Sensor = require('../models/sensor');
-var cron = require('node-cron');
+
 
 const saveSensores = async (array_sensores) => {
     try {
@@ -50,18 +50,18 @@ const sendSensorSimulated = () => {
          });
 }
 
-const saveSensorsCronMongo = (array_sensores) => {
-        
-        cron.schedule("*/15 * * * *",()=>{
-            saveSensores(array_sensores);
-            console.log('save in mongodb');
-        });
-}
+// const saveSensorsCronMongo = (array_sensores) => {
+//         //cron.schedule("*/15 * * * *",()
+//         cron.schedule("*/15 * * * *",()=>{
+//             saveSensores(array_sensores);
+//             console.log('save in mongodb');
+//         });
+// }
 
 
 module.exports = {
     saveSensores,
     simularDatos,
-    saveSensorsCronMongo,
+   // saveSensorsCronMongo,
     sendSensorSimulated
 }

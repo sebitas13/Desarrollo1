@@ -3,9 +3,9 @@ const express = require('express');
 const {createServer} = require('http'); //función proporcionada por Node.js para crear un servidor HTTP.
 const {Server} = require('socket.io'); 
 const cors = require('cors');
-const {simularDatos,saveSensorsCronMongo} = require('../helpers/saveSensores');
+const {simularDatos,saveSensores} = require('../helpers/saveSensores');
 const {saveImagesMongo} = require('../helpers/saveImagenes');
-//var cron = require('node-cron');
+var cron = require('node-cron');
 const {Database} = require('../database/config');
 
 let array_sensores = [];
@@ -97,14 +97,7 @@ class Servidor {
                 console.log('Desde esp8266: '+JSON.stringify(message));
             })
 
-            // socket.on('message2',(message)=>{
-                
-            //     //message['Fecha'] = (new Date().toLocaleString());
-            //     socket.broadcast.emit('lecturas2', JSON.stringify(message));
-            //     //socket.broadcast.emit('lecturas', message);
-            //     console.log('Desde esp32cam:' +JSON.stringify(message));
-            // })
-
+          
 
             /****************** LECTURA  ******************/
 
@@ -134,14 +127,14 @@ class Servidor {
                 console.log(msg.pic);
 
                 /*********************SAVE IMAGENES******************************/
-                array_imagenes.push(msg.pic);
+                const imagen = {
+                    pic: msg.pic,
+                    tiempo: new Date()
+                };
+                array_imagenes.push(imagen);
                 saveImagesMongo(array_imagenes);
 
-                // if(array_imagenes.length > 4){
-                //     saveImagenes(array_imagenes);
-                //     array_imagenes = []
-                //     console.log('save images in mongodb');
-                // } 
+               
             });
 
             //EVENTO DEL STREAM
@@ -152,14 +145,14 @@ class Servidor {
             });
             
           
-            /*********************SAVE SENSOR IN MONGO******************************/
-            saveSensorsCronMongo(array_sensores);
+            
         })
 
         //sendSensorSimulated();
 
         //Guardar la info de los sensores en la BD cada 15 minutos
-
+        /*********************SAVE SENSOR IN MONGO******************************/
+        
         // cron.schedule("*/15 * * * *",()=>{
         //     saveSensores(array_sensores);
             

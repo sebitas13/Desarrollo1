@@ -37,6 +37,8 @@ const saveImagenes = async (array_imagenes) => {
         } 
     } catch (error) {
         console.log(error);   
+    } finally{
+        array_imagenes.length = 0;
     }
 }
 
@@ -45,7 +47,7 @@ const saveImagesMongo = (array_imagenes) => {
         
         if(array_imagenes.length > 4){
              saveImagenes(array_imagenes);
-             array_imagenes.length = 0;
+             //array_imagenes.length = 0;
              console.log('save images in mongodb');
         } 
 }
