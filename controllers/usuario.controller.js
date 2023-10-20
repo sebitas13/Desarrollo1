@@ -140,7 +140,7 @@ const usuarioDelete = async (req=query,res=response) => {
                 
             })
         }else{
-            res.status(500).send({message:'No eres admin para borrar'});
+            res.status(500).json({message:'No eres admin para borrar'});
         }
     } catch (error) {
         res.status(400).json({
@@ -227,6 +227,32 @@ const autorizar = async (req=query,res=response) => {
 } 
 
 
+const autorizarAdmin = async (req=query,res=response) => {
+   
+    
+    try {
+
+        if(req.usuario.correo == "admin@gmail.com"){
+            res.status(200).json({ //204
+                "success" : true,
+                "message" : "Usuario autorizado",
+                "data"    : req.usuario
+                
+            })
+        }else{
+            res.status(500).json({message:'Credenciales insuficientes'});
+        }
+        
+    } catch (error) {
+        res.status(400).json({
+            "success" : false,
+            "message" : "Usuario no autorizado",
+            "errors" : error
+        });
+    }
+} 
+
+
 
 
 
@@ -238,5 +264,5 @@ module.exports = {
     usuarioDelete,
     usuario_login,
     autorizar,
-
+    autorizarAdmin
 }

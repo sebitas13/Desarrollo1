@@ -198,7 +198,89 @@
                   },2000)     
                   
               }
-      
 
+              const token = localStorage.getItem('token');
+              async function autorizar_camara(){
+                fetch('/api/usuarios/camara',{
+                    method : 'GET',
+                    headers : {
+                        'Content-Type': 'application/json',
+                        'authorization' : `${token}`
+                    },
+                })
+                .then(response => response.json())
+                .then(respuesta=>{
+                    
+                    if(!respuesta.success){
+                        toastr.options = {
+                            "closeButton": false,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-right",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": "300",
+                            "hideDuration": "1000",
+                            "timeOut": "5000",
+                            "extendedTimeOut": "1000",
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                          }
+                          toastr["error"]("Credenciales insuficientes", "Error")
+                          mostrarMensajeDeAlerta();     
+                          
+                    }else{
+                        // usuario = respuesta.data.correo;
+                        // id_usuario.textContent = `Usuario: ${usuario} `;
+                        toastr.options = {
+                            "closeButton": false,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-center",
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": "300",
+                            "hideDuration": "1000",
+                            "timeOut": "5000",
+                            "extendedTimeOut": "1000",
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                          }
+                          toastr["info"]("¡Bienvenido al módulo de la cámara! ", "Camara")
+                    }
             
+                    
+                    
+                    
+                }).catch(error=>{
+                    console.error(error);
+                })
+            }
+      
+            autorizar_camara();
+            
+
+function mostrarFondoOscuro() {
+    document.querySelector('.overlay').style.display = 'block';
+  }
+  
  
+  function ocultarFondoOscuro() {
+    document.querySelector('.overlay').style.display = 'none';
+  }
+  
+  function mostrarMensajeDeAlerta() {
+    mostrarFondoOscuro(); // Mostrar fondo oscuro
+    setTimeout(() => {
+      ocultarFondoOscuro();
+      window.location.href = '../menu/menu.html';
+    }, 2500); 
+  }
+  
+  

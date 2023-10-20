@@ -9,6 +9,7 @@ const { usuarioGet,
         usuarioDelete,
         usuario_login,
         autorizar,
+        autorizarAdmin,
 } = require('../controllers/usuario.controller');
 const validarPostUsuarios = [
     check('nombre','Nombre obligatorio').not().isEmpty(),
@@ -40,4 +41,5 @@ router.delete('/:id',validarJWT,validarDeleteUsuarios,usuarioDelete);
 router.post('/login',validarLogin,usuario_login);
 
 router.get('/panel',validarJWT,autorizar);
+router.get('/camara',validarJWT,autorizarAdmin);
 module.exports = router;
