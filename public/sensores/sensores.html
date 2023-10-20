@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <title>Sensor de temperatura</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link rel="stylesheet" href="../helpers/toastr.js">
+    <!-- <link rel="stylesheet" href="../menu.css"> -->
+    <link rel="stylesheet" href="sensores.css">
+    
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <header>
+        
+        <ul class="menu">
+            
+          <a href="#"> 
+            <li class="logo-opcion">
+                <img src="../images/thermometer.png" alt="">
+            </li>
+          </a>
+           
+            <li style="width: 10rem; text-align: center;">
+                <a href="#" >Monitoreo Ambiental</a>
+            </li>   
+            
+            <a href="../menu/menu.html"> 
+                <li class="logo-ingles">
+                    <img src="../images/logo2.jpg" alt="">
+                </li>
+            </a>
+        </ul> 
+        
+        
+    </header>
+
+    <main>
+
+      <div id="chartdivTempAndHume">
+
+      </div>
+      
+
+        <div id="chartdivLdr">
+          <div class="leyenda-graficas">
+            <div class="leyenda-item">
+              <div class="leyenda-color" style="background-color: #6BB4D5;"></div>
+              <span class="leyenda-texto">Luz Ambiental</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="chartdivHume">
+          <div class="leyenda-graficas">
+            <div class="leyenda-item">
+              <div class="leyenda-color" style="background-color: #6BB4D5;"></div>
+              <span class="leyenda-texto">Humedad %</span>
+            </div>
+          </div>
+        </div>
+        <!-- HTML -->
+        
+               
+    </main>
+
+    <footer>
+
+      <div class="opcion-down" >
+          <a href="../menu/menu.html">
+              <img src="../images/browser.png" alt="sensores">
+              <div class="titulo">
+                  <!-- <p>Config</p> -->
+              </div>
+          </a>
+      </div>
+    <div class="opcion-down" >
+        <!-- <a onclick="panel_sensores()"> -->
+        <a href="../sensores/sensores.html">    
+            <img src="../images/thermometer.png" alt="sensores">
+            <div class="titulo">
+                <!-- <p>Sensores</p> -->
+            </div>
+        </a>
+    </div>
+    <div class="opcion-down">
+        <a href="../camara/camara.html">
+            <img src="../images/cctv.png" alt="sensores">
+            <div class="titulo">
+                <!-- <p>Camara</p> -->
+            </div>
+        </a>
+    </div>
+    <div class="opcion-down">
+        <a href="../graficas/graficas.html">
+            <img src="../images/statistics.png" alt="sensores">
+            <div class="titulo">
+                <!-- <p>Visualizacion</p> -->
+            </div>
+            
+        </a>
+    </div>
+    <div class="opcion-down" >
+        <a href="../monitoreo/monitoreo.html">
+            <img src="../images/vision.png" alt="sensores">
+            <div class="titulo">
+                <!-- <p>Monitoreo</p> -->
+            </div>
+        </a>
+    </div>
+
+    <div class="opcion-down">
+        <a href="#" onclick="logout()">
+            <img src="../images/logout.png" alt="sensores">
+            <!-- <p>Logout</p> -->
+        </a>
+    </div>
+</footer>
+
+    <!-- Resources -->
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/radar.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+
+    <script src="../helpers/jquery.js"></script>
+    <script src="../helpers/toastr.js"></script>
+    <script src="sensores.js"></script>
+
+
+   
+    
+</body>
+</html>
+
+
+

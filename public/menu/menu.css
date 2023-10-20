@@ -9,13 +9,15 @@
     border: none;
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #1F1F1F;
-   
+html {
+    background-color: #393E46 ;
 }
 
-
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #393E46;
+   
+}
 
 
 /* MENU */
@@ -29,74 +31,50 @@ body {
     align-items: center;
     /* margin: auto; */
     font-size: 1.2rem;
-    background-color: white; 
+    background-color: #393E46 ;
     flex-wrap: wrap;
-   
+    height: 65vh;
 }
 
-.container-menu .titulo {
-    border-bottom: 10px #1F1F1F !important;
-    color: white;
-}
 
-.opcion {
+
+.opcion-down {
     display: flex;
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
     text-align: center;
-    padding: 1rem;
-    width: 15rem;
-    margin: 2rem;
+    
 
-    border-radius: 10px;
+    margin: 0rem;
+        padding: 0.5rem;
+        /* width: 15rem; */
+        width: 9rem;
+        height: 5rem;
+
+    border-radius: 5px;
     background: #e0e0e0;
-    box-shadow:  2px 2px 10px #bebebe,
-             -2px -2px 10px #ffffff;
+    /* box-shadow:  2px 2px 10px #bebebe,
+             -2px -2px 10px #ffffff; */
 }
 
-#opcion1 {
-    background-image: url('images/monitoreoambiental.jpg');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: local;
+.opcion-down img {
+    width: 30px;
 }
 
-#opcion2 {
-    background-image: url('images/cameraiot.jpeg');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: local;
+main {
+    height: 65vh;
+    overflow: auto;
 }
 
-
-#opcion3 {
-    background-image: url('images/graficas.jpg');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: local;
+footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1rem 0;
+    background-color: #393E46;
+    border-top: 1px solid rgba(255, 255, 255, 0.207);
 }
-
-#opcion4 {
-    background-image: url('images/monitoreo.jpg');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: local;
-}
-
-#opcion5 {
-    background-image: url('images/configuracion.jpg');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: local;
-}
-
-
 
 
 .opcion:hover {
@@ -114,13 +92,10 @@ body {
     color: #5532A0;
     color: #14171A;
     /* color: blueviolet; */
-     
+    
+
+    
 }
-
-
-
-
-
 
 
 
@@ -142,7 +117,7 @@ header {
     
 
     /* background-color: #0047BA; */
-    background-color: #14171A;
+    background-color: #222831;
     font-size: 1.2rem;
     font-weight: 500;
     
@@ -155,12 +130,12 @@ header {
 header .menu {
     display: flex;
     flex-wrap: wrap;
-    justify-content: right;
+    justify-content: space-around;
     align-items: center;
     width: 80%;
     height: 50px;
     /* background-color: #0047BA; */
-    background-color: #14171A;
+    background-color: #222831;
     /* background-color: red; */
     border-bottom: 1px solid rgba(255, 255, 255, 0.207);
     list-style-type: none; /*Esto lo cambie por el display de abajo*/
@@ -170,8 +145,13 @@ header .menu {
 header .logo-ingles img {
     width: 50px;
     /* margin: 0.5rem; */
-    margin-left: 2rem;
+ 
 }
+
+header .logo-opcion img {
+    width: 2.7rem;
+}
+
 
 
 header li a {
@@ -203,70 +183,6 @@ header li a {
     
 }
 
-
-/* #burger.abierto .barra {
-    width: 0;
-} */
-
-#burger .barra {
-    width: 1.8rem;
-    height: 2px;
-    background-color: #00BCD4;
-    margin: 0.2rem 0; 
-    transition: 500ms ease-in-out;
-}
-
-
-
-#burger.abierto .barra.top {
-    height: 4px;
-    transform: rotate(45deg) translateY(14px);
-}
-
-#burger.abierto .barra.mid {
-    width: 0;
-}
-
-#burger.abierto .barra.bot {
-    height: 4px;
-    transform: rotate(-45deg) translateY(-14px)
-}
-
-/*MENU LATERAL  */
-
-.menu-lateral {
-
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: left;
-    padding: 1rem;
-    padding-top: 8rem;
-    width: 200px;
-    height: 100vh;
-    background-color: rgb(31, 31, 31,0.8);
-    position: fixed;
-    top: 0;
-    left: 0;
-    font-size: 1rem;
-    transition: 500ms ease-in-out;
-    left: -240px;
-}
-
-.menu-lateral {
-    list-style: none;
-
-}
-
-.menu-lateral li {
-    margin-bottom: 1rem;
-    
-}
-
-.menu-lateral li a {
-    font-size: 0.7rem;
-}
-
 @media (max-width:600px){
     .container-menu {
         
@@ -291,7 +207,7 @@ header li a {
     }
 
     header .logo-ingles img {
-        width: 50px;
+        width: 40px;
        
     }
 
@@ -304,4 +220,24 @@ header li a {
     #burger .barra {
         width: 1.5rem; 
     }
+}
+
+
+@media (max-width:720px){
+    #toggleBtn1,
+    #toggleBtn3, 
+    #capturarBtn,   
+    .leyenda-texto {
+        font-size: 0.7rem;
+    }
+
+    .opcion-down {
+        width: 50px ;
+        height: 50px ;
+    }
+
+    .opcion-down img {
+        width: 30px ;
+    }
+      
 }

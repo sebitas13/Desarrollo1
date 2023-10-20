@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' href='https://unpkg.com/bulma@0.9.1/css/bulma.min.css'>
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="../helpers/toastr.css">
+    <link rel="stylesheet" href="menu.css">
+
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Menu principal</title>
+</head>
+<body>
+    <header>
+        <ul class="menu">
+            <a href="#"> 
+                <li class="logo-opcion">
+                    <img src="../images/browser.png" alt="">
+                </li>
+            </a>
+               
+            <li style="width: 10rem; text-align: center;">
+                <a id="usuario" href="#">Bienvenido Sebas</a>
+            </li>      
+            <a href="../menu/menu.html"> 
+                <li class="logo-ingles">
+                    <img src="../images/logo2.jpg" alt="">
+                </li>
+            </a>
+        </ul> 
+        
+    </header>
+
+    <main>
+
+        <section id='app' class='hero is-link is-fullheight' style='background-color: #393E46; '>
+            <div class='hero-body' style="flex-grow: 0;">
+                <div class='container' style="height: 30px;">
+    
+                    <div class='columns has-text-centered'>
+                        <div class='column'>
+                            <h1 style='font-size: 1rem; margin-bottom: 3rem;'>Paramtros Ambientales</h1>
+                            <i class='fa fa-thermometer-half' style='font-size: 4rem;'></i>
+                        </div>
+                    </div>
+    
+    
+                    <div class='columns has-text-centered'>
+                        <div class='column has-text-centered'>
+                            <h2 class='is-size-6 has-text-warning'>Temperatura</h2>
+                            <h2 id="temperatura" class='is-size-2'value=133 >__</h2>
+                        </div>
+                        <div class='column has-text-centered'>
+                            <h2 class='is-size-6 has-text-warning'>Humedad</h2>
+                            <h2 id="humedad" class='is-size-2'>__</h2>
+                        </div>
+                        <div class='column has-text-centered'>
+                            <h2 class='is-size-6 has-text-warning'>SensacionTermica</h2>
+                            <h2 id="ST" class='is-size-2'>__</h2>
+                        </div>
+                        <div class='column has-text-centered'>
+                            <h2 class='is-size-6 has-text-warning'>LDR</h2>
+                            <h2 id="LDR" class='is-size-2'>__</h2>
+                        </div>
+                
+                        <div class='column has-text-centered'>
+                            <h2 class='is-size-6 has-text-warning'>FECHA</h2>
+                            <h2 id="FECHA" class='is-size-2'>__</h2>
+                        </div>
+                    </div>
+     
+                    
+                    <div class='columns has-text-centered'>
+                        <div class='column'>
+                            <p>Última lectura: Hace <strong class='has-text-white'>3</strong> segundo(s)</p>
+                            <p class='is-size-5'><i class='fa fa-code'></i> con <i class='fa fa-heart has-text-danger'></i>
+                                por <a target='_blank' class='has-text-warning'
+                                    href=''>Sebas</a></p>
+                        </div>
+                      
+                    </div>
+    
+    
+                </div>
+    
+            </div>
+            
+        </section>
+    
+
+       <!-- <div class="container-menu">
+            <div class="opcion" id="opcion1">
+               
+                <a href="../sensores/sensores.html">    
+                    <img src="../images/thermometer.png" alt="sensores">
+                    <div class="titulo">
+                        <p>Sensores</p>
+                    </div>
+                </a>
+            </div>
+            <div class="opcion" id="opcion2">
+                <a href="../camara/camara.html">
+                    <img src="../images/cctv.png" alt="sensores">
+                    <div class="titulo">
+                        <p>Camara</p>
+                    </div>
+                </a>
+            </div>
+            <div class="opcion" id="opcion3">
+                <a href="../graficas/graficas.html">
+                    <img src="../images/statistics.png" alt="sensores">
+                    <div class="titulo">
+                        <p>Visualizacion</p>
+                    </div>
+                    
+                </a>
+            </div>
+            <div class="opcion" id="opcion4">
+                <a href="../monitoreo/monitoreo.html">
+                    <img src="../images/vision.png" alt="sensores">
+                    <div class="titulo">
+                        <p>Monitoreo</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="opcion" id="opcion5">
+                <a href="#">
+                    <img src="../images/browser.png" alt="sensores">
+                    <div class="titulo">
+                        <p>Config</p>
+                    </div>
+                </a>
+            </div>
+            <div class="opcion" id="opcion6">
+                <a href="#" onclick="logout()">
+                    <img src="../images/logout.png" alt="sensores">
+                    <p>Logout</p>
+                </a>
+            </div>
+          
+        </div> -->
+        
+    </main>
+  
+   
+    <footer>
+
+        <div class="opcion-down" >
+            <a href="../menu/menu.html">
+                <img src="../images/browser.png" alt="sensores">
+                <div class="titulo">
+                    <!-- <p>Config</p> -->
+                </div>
+            </a>
+        </div>
+
+        <div class="opcion-down" >
+            <!-- <a onclick="panel_sensores()"> -->
+            <a href="../sensores/sensores.html">    
+                <img src="../images/thermometer.png" alt="sensores">
+                <div class="titulo">
+                    <!-- <p>Sensores</p> -->
+                </div>
+            </a>
+        </div>
+        <div class="opcion-down">
+            <a href="../camara/camara.html">
+                <img src="../images/cctv.png" alt="sensores">
+                <div class="titulo">
+                    <!-- <p>Camara</p> -->
+                </div>
+            </a>
+        </div>
+        <div class="opcion-down">
+            <a href="../graficas/graficas.html">
+                <img src="../images/statistics.png" alt="sensores">
+                <div class="titulo">
+                    <!-- <p>Visualizacion</p> -->
+                </div>
+                
+            </a>
+        </div>
+        <div class="opcion-down" >
+            <a href="../monitoreo/monitoreo.html">
+                <img src="../images/vision.png" alt="sensores">
+                <div class="titulo">
+                    <!-- <p>Monitoreo</p> -->
+                </div>
+            </a>
+        </div>
+
+        
+        <div class="opcion-down">
+            <a href="../index.html" onclick="logout()">
+                <img src="../images/logout.png" alt="sensores">
+                <!-- <p>Logout</p> -->
+            </a>
+        </div>
+    </footer>
+    
+    <script src="../helpers/jquery.js"></script>
+    <script src="../helpers/toastr.js"></script>
+   
+    <script src="menu.js"></script>
+     
+      
+</body>
+</html>

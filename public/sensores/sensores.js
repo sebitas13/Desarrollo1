@@ -1,191 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
-    <title>Sensor de temperatura</title>
-    <!-- <link rel="stylesheet" href="style.css"> -->
-    <link rel="stylesheet" href="helpers/toastr.css">
-    <link rel="stylesheet" href="menu.css">
-     <!-- Styles -->
-     <style>
 
-        body {
-            background-color: aliceblue;
-        }
-
-        #chartdivLdr {
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-          width: 80%;
-          height: 500px;
-          max-width: 100%;
-          margin: auto;
-          
-          margin-top: 1rem;
-          
-          
-        }
-
-        #chartdivHume {
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-          width: 80%;
-          height: 500px;
-          max-width: 100%;
-          margin: auto;
-          
-          margin-top: 1rem;
-          
-          
-        }
-
-        #chartdivTempAndHume {
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-          width: 80%;
-          height: 500px;
-          max-width: 100%;
-          margin: auto;
-          
-          margin-top: 1rem;
-        }
-
-
-        .leyenda-graficas {
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) !important;
-          background-color: rgba(0, 187, 212);
-          border: 1px solid #ccc;
-          padding: 10px;
-         
-          border-radius: 5px;
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Estilos para cada elemento de la leyenda */
-        .leyenda-item {
-          display: flex;
-          align-items: center;
-          
-        }
-
-        /* Estilos para el cuadro de color de la leyenda */
-        .leyenda-color {
-          width: 20px;
-          height: 20px;
-          margin-right: 10px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-        }
-
-        /* Estilos para el texto de la leyenda */
-        .leyenda-texto {
-          font-size: 1rem;
-          color: aliceblue;
-        }
-
-        @media (max-width:720px){
-          #chartdivLdr{
-            font-size: 0.5rem;
-            height: 350px;
-            width: 300px;
-          }
-
-          #chartdivHume{
-            font-size: 0.5rem;
-            height: 350px;
-            width: 300px;
-          }
-
-          #chartdivTempAndHume {
-            font-size: 0.5rem;
-            height: 350px;
-            width: 300px;
-          }
-          /* .leyenda-texto{
-            font-size: 0.5rem;
-          } */
-        }
-    </style>
-   
-    <script src="/socket.io/socket.io.js"></script>
-</head>
-<body>
-    <header>
-        <div onclick="mostrarLateral()" id="burger" class="burger">
-            <div class="barra top"></div>
-            <div class="barra mid"></div>
-            <div class="barra bot"></div>
-        </div>
-
-        <ul  class="menu-lateral">
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Perfil de usuario</a></li>
-            <li><a href="#">Ayuda y soporte</a></li>
-            <li><a href="#">Acerca de</a></li>
-            <li><a onclick="logout()" href="#" >Cerrar Sesion</a></li>
-        </ul>
-
-        <ul class="menu">
-            
-            
-           
-            <li>
-                <a href="#">Bienvenido Sebas</a>
-            </li>   
-            
-            <a href="menu.html"> 
-                <li class="logo-ingles">
-                    <img src="images/logo2.jpg" alt="">
-                </li>
-            </a>
-        </ul> 
-        
-        
-    </header>
-
-    <main>
-
-      <div id="chartdivTempAndHume">
-        <!-- <div class="leyenda-graficas">
-          <div class="leyenda-item">
-            <div class="leyenda-color" style="background-color: #6BB4D5;"></div>
-            <span class="leyenda-texto">Temperatura | Sensacion termica °C</span>
-          </div>
-        </div> -->
-      </div>
-      
-
-        <div id="chartdivLdr">
-          <div class="leyenda-graficas">
-            <div class="leyenda-item">
-              <div class="leyenda-color" style="background-color: #6BB4D5;"></div>
-              <span class="leyenda-texto">Luz Ambiental</span>
-            </div>
-          </div>
-        </div>
-
-        <div id="chartdivHume">
-          <div class="leyenda-graficas">
-            <div class="leyenda-item">
-              <div class="leyenda-color" style="background-color: #6BB4D5;"></div>
-              <span class="leyenda-texto">Humedad %</span>
-            </div>
-          </div>
-        </div>
-        <!-- HTML -->
-        
-               
-    </main>
-    <!-- Resources -->
-    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
-    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
-    <script src="https://cdn.amcharts.com/lib/5/radar.js"></script>
-    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
-
-    <script src="helpers/jquery.js"></script>
-    <script src="helpers/toastr.js"></script>
-
-    <!-- Chart code -->
-    <script>
       const socket = io();
       
       let lateral = document.querySelector('.menu-lateral');
@@ -307,7 +120,8 @@
 
             // Colors
             var colors = am5.ColorSet.new(root, {
-              step: 2
+                 step: 2
+                
             });
 
 
@@ -380,11 +194,11 @@
             });
 
             clockHand1.pin.setAll({
-              fill: color1
+              fill: "#EEEEEE"
             });
 
             clockHand1.hand.setAll({
-              fill: color1
+              fill: "#EEEEEE"
             });
 
             var bullet1 = axisDataItemTempAndHume1.set("bullet", am5xy.AxisBullet.new(root, {
@@ -560,14 +374,14 @@
               clockHand.pin.setAll({
                 fillOpacity: 0,
                 strokeOpacity: 0.5,
-                stroke: am5.color(0x000000),
+                stroke: am5.color(0xffffff),
                 strokeWidth: 1,
                 strokeDasharray: [2, 2]
               });
               clockHand.hand.setAll({
                 fillOpacity: 0,
                 strokeOpacity: 0.5,
-                stroke: am5.color(0x000000),
+                stroke: am5.color(0xffffff),
                 strokeWidth: 0.5
               });
 
@@ -681,7 +495,7 @@
             var xAxis = chart.xAxes.push(am5xy.ValueAxis.new(root, {
               maxDeviation: 0,
               min: 0,
-              max: 1000,
+              max: 800,
               strictMinMax: true,
               renderer: axisRenderer
             }));
@@ -736,25 +550,26 @@
             // Create axis ranges bands
             // https://www.amcharts.com/docs/v5/charts/radar-chart/gauge-charts/#Bands
             var bandsData = [ {
-              title: "Oscuro",
+              title: "dark",
               color: "#333333",
               lowScore: 10,
               highScore: 100
             }, {
-              title: "Luz baja",
+              title: "normal",
               color: "#666666",
               lowScore: 100,
               highScore: 200
             }, {
-              title: "Luz normal",
+              title: "Luz alta",
               color: "#AAAAAA",
               lowScore: 200,
-              highScore: 800
-            }, {
+              highScore: 600
+            }, 
+            {
               title: "Luz extrema",
               color: "#FFCC00",
-              lowScore: 800,
-              highScore: 1000
+              lowScore: 600,
+              highScore: 800
             }
           ];
 
@@ -823,12 +638,3 @@
                   
               }
       
-    
-           
-    </script>
-   
-</body>
-</html>
-
-
-

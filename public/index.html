@@ -23,8 +23,6 @@
         </div>
     </main>
 
-
-    
     <script src="helpers/jquery.js"></script>
     <script src="helpers/toastr.js"></script>
     <script>
@@ -78,7 +76,7 @@
                     toastr["success"](`Bienvenido ${respuesta.message}`, "Login");
                     localStorage.setItem('token',token);
                     setTimeout(()=>{
-                        window.location.href = 'menu.html';
+                        window.location.href = './menu/menu.html';
                     },1000)
                     
                 }else{

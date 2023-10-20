@@ -3,126 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="helpers/toastr.css">
-    <link rel="stylesheet" href="menu.css">
-     <!-- Styles -->
-     <style>
-
-        body {
-            background-color: aliceblue;
-        }
-
-        #chartdivHume {
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-          width: 80%;
-          height: 500px;
-          max-width: 100%;
-          margin: auto;
-          margin-bottom: 2rem;
-        }
-
-        #chartdivLdr {
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-          width: 80%;
-          height: 500px;
-          max-width: 100%;
-          margin: auto;
-          margin-bottom: 2rem;
-        }
-
-        #chartdivTemp {
-          /* border: 1px solid rgba(0, 187, 212, 0.5); */
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-          width: 80%;
-          height: 500px;
-          margin: auto;
-          margin-bottom: 2rem;
-        /* max-width: 100% */
-        }
-
-        .leyenda-graficas {
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) !important;
-          background-color: rgba(0, 187, 212);
-          border: 1px solid #ccc;
-          padding: 10px;
-          margin: 10px;
-          border-radius: 5px;
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Estilos para cada elemento de la leyenda */
-        .leyenda-item {
-          display: flex;
-          align-items: center;
-          margin-bottom: 5px;
-        }
-
-        /* Estilos para el cuadro de color de la leyenda */
-        .leyenda-color {
-          width: 20px;
-          height: 20px;
-          margin-right: 10px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-        }
-
-        /* Estilos para el texto de la leyenda */
-        .leyenda-texto {
-          font-size: 1rem;
-          color: aliceblue;
-        }
-
-        @media (max-width:720px){
-          #chartdivHume{
-            font-size: 0.7rem;
-            height: 250px;
-          }
-
-          #chartdivLdr{
-            font-size: 0.7rem;
-            height: 250px;
-          }
-
-          #chartdivTemp{
-            font-size: 0.7rem;
-            height: 250px;
-          }
-
-          /* .leyenda-texto{
-            font-size: 0.5rem;
-          } */
-        }
-    </style>
     <title>Menu principal</title>
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <link rel="stylesheet" href="../helpers/toastr.css">
+    <link rel="stylesheet" href="graficas.css">
+
 </head>
 <body>
     <header>
-        <div onclick="mostrarLateral()" id="burger" class="burger">
-            <div class="barra top"></div>
-            <div class="barra mid"></div>
-            <div class="barra bot"></div>
-        </div>
-
-        <ul  class="menu-lateral">
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Perfil de usuario</a></li>
-            <li><a href="#">Ayuda y soporte</a></li>
-            <li><a href="#">Acerca de</a></li>
-            <li><a onclick="logout()" href="#" >Cerrar Sesion</a></li>
-        </ul>
-
+       
         <ul class="menu">
             
-            
+          <a href="#"> 
+            <li class="logo-opcion">
+                <img src="../images/statistics.png" alt="">
+            </li>
+          </a>
            
-            <li>
-                <a href="#">Bienvenido Sebas</a>
+            <li style="width: 10rem; text-align: center;">
+                <a href="#" >Monitoreo Ambiental</a>
             </li>   
+           
             
-            <a href="menu.html"> 
+            <a href="../menu/menu.html"> 
                 <li class="logo-ingles">
-                    <img src="images/logo2.jpg" alt="">
+                    <img src="../images/logo2.jpg" alt="">
                 </li>
             </a>
         </ul> 
@@ -131,33 +35,34 @@
     </header>
 
     <main>
+      
       <div class="leyenda-graficas">
         <div class="leyenda-item">
           <div class="leyenda-color" style="background-color: #6BB4D5;"></div>
           <span class="leyenda-texto">Temperatura °C</span>
         </div>
       </div>
- 
 
       <div id="chartdivTemp">
-
+        
       </div>
         
-
-        <div class="leyenda-graficas">
+      <div class="leyenda-graficas">
       
-          <div class="leyenda-item">
-            <div class="leyenda-color" style="background-color: #816CD5;"></div>
-            <span class="leyenda-texto">Sensacion Termica °C</span>
-          </div>
-          <div class="leyenda-item">
-            <div class="leyenda-color" style="background-color: #6BB4D5"></div>
-            <span class="leyenda-texto">Humedad %</span>
-          </div>
-    
+        <div class="leyenda-item">
+          <div class="leyenda-color" style="background-color: #816CD5;"></div>
+          <span class="leyenda-texto">Sensacion Termica °C</span>
         </div>
-        <div id="chartdivHume">
+        <div class="leyenda-item">
+          <div class="leyenda-color" style="background-color: #6BB4D5"></div>
+          <span class="leyenda-texto">Humedad %</span>
+        </div>
+  
+      </div>
 
+        
+        <div id="chartdivHume">
+         
         </div>
         
 
@@ -171,20 +76,73 @@
         </div>
 
         <div id="chartdivLdr">
-
+          
         </div>
         <!-- HTML -->
         
                
     </main>
+    <footer>
+
+      <div class="opcion-down" >
+          <a href="../menu/menu.html">
+              <img src="../images/browser.png" alt="sensores">
+              <div class="titulo">
+                  <!-- <p>Config</p> -->
+              </div>
+          </a>
+      </div>
+    <div class="opcion-down" >
+        <!-- <a onclick="panel_sensores()"> -->
+        <a href="../sensores/sensores.html">    
+            <img src="../images/thermometer.png" alt="sensores">
+            <div class="titulo">
+                <!-- <p>Sensores</p> -->
+            </div>
+        </a>
+    </div>
+    <div class="opcion-down">
+        <a href="../camara/camara.html">
+            <img src="../images/cctv.png" alt="sensores">
+            <div class="titulo">
+                <!-- <p>Camara</p> -->
+            </div>
+        </a>
+    </div>
+    <div class="opcion-down">
+        <a href="../graficas/graficas.html">
+            <img src="../images/statistics.png" alt="sensores">
+            <div class="titulo">
+                <!-- <p>Visualizacion</p> -->
+            </div>
+            
+        </a>
+    </div>
+    <div class="opcion-down" >
+        <a href="../monitoreo/monitoreo.html">
+            <img src="../images/vision.png" alt="sensores">
+            <div class="titulo">
+                <!-- <p>Monitoreo</p> -->
+            </div>
+        </a>
+    </div>
+
+    <div class="opcion-down">
+        <a href="#" onclick="logout()">
+            <img src="../images/logout.png" alt="sensores">
+            <!-- <p>Logout</p> -->
+        </a>
+    </div>
+</footer>
+
     <!-- Resources -->
     <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 
-    <script src="helpers/jquery.js"></script>
-    <script src="helpers/toastr.js"></script>
-
+    <script src="../helpers/jquery.js"></script>
+    <script src="../helpers/toastr.js"></script>
+    <script src="graficas.js"></script>
     <!-- Chart code -->
 <script>
     //const socket = io();

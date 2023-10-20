@@ -1,0 +1,279 @@
+*,
+*::after,
+*::before {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    outline: none;
+    background: none;
+    border: none;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #393E46;
+    color: red !important;
+}
+
+
+/* HEADER */
+
+header {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  position: sticky; /*Al asignar un posicion podemos asignarle el top*/
+  top: 0; /*Importante */
+  z-index: 1;
+  
+  /* height: 15vh; */
+  height: 90px;
+  padding-bottom: 0.5rem;
+  
+
+  /* background-color: #0047BA; */
+  background-color: #222831;
+  font-size: 1.2rem;
+  font-weight: 500;
+  
+  
+}
+
+
+
+
+header .menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  width: 80%;
+  height: 50px;
+  /* background-color: #0047BA; */
+  background-color: #222831;
+  /* background-color: red; */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.207);
+  list-style-type: none; /*Esto lo cambie por el display de abajo*/
+}
+
+
+header .logo-ingles img {
+  width: 50px;
+  /* margin: 0.5rem; */
+ 
+}
+
+header .logo-opcion img {
+  width: 2.7rem;
+}
+
+
+header li a {
+  text-decoration: none;
+  color: white;
+}
+
+@media screen and (orientation: landscape) {
+  header {
+      position: relative;
+  }
+}
+
+
+@media (max-width:600px){
+  .container-menu {
+      
+      justify-items: center;
+      align-items: center;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* Dos columnas de igual tamaño */
+      grid-template-rows: repeat(3, 1fr); /* Tres filas de igual tamaño */
+      gap: 10px; /* Espacio entre elementos */
+  }
+
+  .opcion {
+      margin: 0rem;
+      padding: 0.5rem;
+      /* width: 15rem; */
+      width: 100px;
+      height: 100px;
+  }
+
+  .opcion a{
+      font-size: 1rem !important;
+  }
+
+  header .logo-ingles img {
+      width: 40px;
+     
+  }
+
+  header li a {
+      text-decoration: none;
+      color: white;
+      font-size: 0.7rem;
+  }
+
+  #burger .barra {
+      width: 1.5rem; 
+  }
+}
+
+#chartdivLdr {
+  
+  width: 80%;
+  height: 500px;
+  max-width: 100%;
+  margin: auto;
+  background-color: #EEEEEE;
+  margin-top: 1rem;
+  
+  
+}
+
+#chartdivHume {
+  
+  width: 80%;
+  height: 500px;
+  max-width: 100%;
+  margin: auto;
+  background-color: #EEEEEE;
+  margin-top: 1rem;
+  
+  
+}
+
+#chartdivTempAndHume {
+  
+  width: 80%;
+  height: 500px;
+  max-width: 100%;
+  margin: auto;
+  background-color: #EEEEEE;
+  margin-top: 1rem;
+}
+
+
+.leyenda-graficas {
+  background-color: #00ADB5;
+  padding: 10px;
+ 
+}
+
+/* Estilos para cada elemento de la leyenda */
+.leyenda-item {
+  display: flex;
+  align-items: center;
+  
+}
+
+/* Estilos para el cuadro de color de la leyenda */
+.leyenda-color {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Estilos para el texto de la leyenda */
+.leyenda-texto {
+  font-size: 1rem;
+  color: aliceblue;
+}
+
+@media (max-width:720px){
+  #chartdivLdr{
+    font-size: 0.8rem;
+    height: 250px;
+    width: 300px;
+    
+  }
+
+  #chartdivHume{
+    font-size: 0.8rem;
+    height: 250px;
+    width: 300px;
+  }
+
+  #chartdivTempAndHume {
+    font-size: 0.8rem;
+    height: 250px;
+    width: 300px;
+    
+  }
+  .leyenda-texto{
+    font-size: 0.8rem;
+  }
+}
+
+
+
+
+
+/* PARTE BAJA */
+
+
+footer {
+
+  border-top: 1px solid rgba(255, 255, 255, 0.207);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 1rem 0;
+  background-color: #393E46;
+  border-top: 1px solid rgba(255, 255, 255, 0.207);
+}
+
+main {
+  height: 65vh;
+  overflow: auto;
+}
+
+
+
+.opcion-down {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  text-align: center;
+  
+
+  margin: 0rem;
+      padding: 0.5rem;
+      /* width: 15rem; */
+      width: 9rem;
+      height: 5rem;
+
+  border-radius: 5px;
+  background: #e0e0e0;
+  /* box-shadow:  2px 2px 10px #bebebe,
+           -2px -2px 10px #ffffff; */
+}
+
+.opcion-down img {
+  width: 30px;
+}
+
+
+@media (max-width:720px){
+  #toggleBtn1,
+  #toggleBtn3, 
+  #capturarBtn,   
+  .leyenda-texto {
+      font-size: 0.7rem;
+  }
+
+  .opcion-down {
+      width: 50px ;
+      height: 50px ;
+  }
+
+  .opcion-down img {
+      width: 30px ;
+  }
+    
+}
