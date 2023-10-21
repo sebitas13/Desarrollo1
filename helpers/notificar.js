@@ -13,7 +13,7 @@ const notificarIntruso = async () =>{
         const pushbulletEndpoint = 'https://api.pushbullet.com/v2/pushes';
         const data = {
             body: message+ '\n' + 'http://192.168.0.2:5000/',
-            title: 'ALERTA DE INTRUSO',
+            title: 'ALERTA DE INTRUSO!',
             type: 'file',
             file_name : 'Intruso',
             file_type : 'image/jpeg',
