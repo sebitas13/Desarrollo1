@@ -31,7 +31,6 @@ const notificarIntruso = async () =>{
         
     } catch (error) {
         console.error('Error al enviar la notificación:', error);
-        
     }
 
 }
