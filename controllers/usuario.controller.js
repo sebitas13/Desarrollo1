@@ -1,7 +1,6 @@
 const {response,query} = require('express');
 const Usuario = require('../models/usuario');
 
-
 const bcrypt = require('bcrypt');
 const {generarToken} = require('../helpers/jwt')
 
@@ -257,6 +256,8 @@ const autorizarAdmin = async (req=query,res=response) => {
 
 
 
+
+
 module.exports = {
     usuarioGet,
     usuarioPost,
@@ -264,5 +265,6 @@ module.exports = {
     usuarioDelete,
     usuario_login,
     autorizar,
-    autorizarAdmin
+    autorizarAdmin,
+    
 }

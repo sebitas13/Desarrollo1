@@ -3,8 +3,6 @@
             const socket = io();
             const toggleBtn1 = document.getElementById('toggleBtn1');
             
-            let lateral = document.querySelector('.menu-lateral');
-            let lateral_abierto = false;
 
             // ENCENDER APAGAR MONITOREO
             let monitoreoState = false;
@@ -41,6 +39,55 @@
 
 
 
+
+
+            /*******************ENCENDER APAGAR NOTIFICACION**********************/
+           
+            const notificarBtn = document.getElementById('notificarBtn');
+            let notificacionState = false;
+            notificarBtn.addEventListener('click', () => {
+                notificacionState = !notificacionState;
+                updateUI2();
+                console.log('Estado actualizado', notificacionState);
+                socket.emit('notificacionState', notificacionState);
+
+                // ctx.clearRect(0, 0, canvas.width, canvas.height);    
+               
+            });
+
+            const updateUI2 = () => {
+                if(notificacionState){
+                    notificarBtn.classList.add('on');
+                    // canvas.setAttribute('style','display:flex');
+                    
+                }else{
+                    notificarBtn.classList.remove('on'); 
+                    
+                }
+               
+                notificarBtn.innerText = notificacionState ? 'ON' : 'OFF';
+            };
+
+            //Es necesario para que se actualice el boton en los otros usuarios
+            socket.on('notificacionState', state => {
+              
+                notificacionState = state;
+                updateUI2();
+                console.log('Estado actualizado por otro usuario', state);
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
             //Cada minuto se desactiva la camara por seguridad
             
             function apagarMonitoreoAutomaticamente() {
@@ -67,11 +114,7 @@
                             
             });
 
-            const actualizarBtn = document.getElementById('actualizarBtn');
-            actualizarBtn.addEventListener('click',  () => {
-                window.location.reload();
-                            
-            });
+            
 
 
 
@@ -123,14 +166,6 @@
 
           
 
-            function mostrarLateral(){
-                  if(!lateral_abierto){
-                      lateral.setAttribute('style','left:0px')
-                  }else{
-                      lateral.setAttribute('style','left:-240px')
-                  }
-                  lateral_abierto = !lateral_abierto;
-      }
 
             function logout(){
                   localStorage.removeItem('token');

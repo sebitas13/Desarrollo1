@@ -70,7 +70,7 @@ header li a {
 
 #toggleBtn1,
 #eliminarBtn,
-#actualizarBtn {
+#notificarBtn {
     height: 3rem;
     width: 3rem;
     border-radius: 5px;
@@ -81,7 +81,7 @@ header li a {
     background-color: #00ADB5;
 }
 
-
+#notificarBtn.on,
 #toggleBtn1.on {
   background-color: mediumaquamarine;
 }
@@ -182,7 +182,7 @@ footer {
 
   @media (max-width:720px){
     #toggleBtn1,
-    #toggleBtn3, 
+    #notificarBtn, 
     #capturarBtn,   
     .leyenda-texto {
         font-size: 0.7rem;

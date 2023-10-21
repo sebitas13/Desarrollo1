@@ -8,6 +8,8 @@ const {saveImagesMongo} = require('../helpers/saveImagenes');
 var cron = require('node-cron');
 const {Database} = require('../database/config');
 
+
+
 let array_sensores = [];
 let array_imagenes = [];
 class Servidor {
@@ -66,6 +68,7 @@ class Servidor {
         let estadoCamara = false;
         let estadoMonitoreo = false;
         let estadoIluminar = false;
+        let estadoNotifiacion = false;
         this.io.on('connection',(socket)=>{
 
             console.log(`Conectado con el cliente ${socket.id}`)
@@ -119,6 +122,12 @@ class Servidor {
                 socket.broadcast.emit('iluminarState', value);
             });
 
+            socket.on('notificacionState', value => {
+                estadoNotifiacion = value;
+                socket.broadcast.emit('notificacionState', value);
+                console.log('Estado notificacion',estadoNotifiacion);
+            });
+
 
             //EVENTO DEL MONITOREO
 
@@ -132,7 +141,7 @@ class Servidor {
                     tiempo: new Date()
                 };
                 array_imagenes.push(imagen);
-                saveImagesMongo(array_imagenes);
+                saveImagesMongo(array_imagenes,estadoNotifiacion);
 
                
             });

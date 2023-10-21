@@ -1,7 +1,7 @@
 const Imagen = require('../models/imagen');
+const {notificarIntruso} = require('../helpers/notificar');
 
-
-const saveImagenes = async (array_imagenes) => {
+const saveImagenes = async (array_imagenes,estadoNotifiacion) => {
     try {
         const imagen = await Imagen.findOne({}).sort({ _id: -1 });
 
@@ -39,14 +39,18 @@ const saveImagenes = async (array_imagenes) => {
         console.log(error);   
     } finally{
         array_imagenes.length = 0;
+        if(estadoNotifiacion){
+            notificarIntruso();
+        }
+       
     }
 }
 
-const saveImagesMongo = (array_imagenes) => {
+const saveImagesMongo = (array_imagenes,estadoNotifiacion) => {
 
         
         if(array_imagenes.length > 4){
-             saveImagenes(array_imagenes);
+             saveImagenes(array_imagenes,estadoNotifiacion);
              //array_imagenes.length = 0;
              console.log('save images in mongodb');
         } 

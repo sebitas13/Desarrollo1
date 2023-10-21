@@ -42,4 +42,7 @@ router.post('/login',validarLogin,usuario_login);
 
 router.get('/panel',validarJWT,autorizar);
 router.get('/camara',validarJWT,autorizarAdmin);
+
+
+// router.post('/notificar',notificarIntruso);
 module.exports = router;
