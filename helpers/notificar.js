@@ -26,7 +26,7 @@ const notificarIntruso = async () =>{
         }
 
         let response = await axios.post(pushbulletEndpoint,data,{headers :headers} )
-        // let data = response.data;
+       
         console.log('Notificación enviada con éxito:', response.data);
         
     } catch (error) {
