@@ -81,127 +81,7 @@ header li a {
 }
 
 
-/* Burger */
-
-#burger {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1rem;
-    padding: 0.5rem;
-    position: fixed;
-    left:1.2rem;
-    top: 1.5rem;
-    z-index: 2;
-    cursor: pointer;
-    
-}
-
-
-/* #burger.abierto .barra {
-    width: 0;
-} */
-
-#burger .barra {
-    width: 1.8rem;
-    height: 2px;
-    background-color: #00BCD4;
-    margin: 0.2rem 0; 
-    transition: 500ms ease-in-out;
-}
-
-
-
-#burger.abierto .barra.top {
-    height: 4px;
-    transform: rotate(45deg) translateY(14px);
-}
-
-#burger.abierto .barra.mid {
-    width: 0;
-}
-
-#burger.abierto .barra.bot {
-    height: 4px;
-    transform: rotate(-45deg) translateY(-14px)
-}
-
-/*MENU LATERAL  */
-
-.menu-lateral {
-
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: left;
-    padding: 1rem;
-    padding-top: 8rem;
-    width: 200px;
-    height: 100vh;
-    background-color: rgb(31, 31, 31,0.8);
-    position: fixed;
-    top: 0;
-    left: 0;
-    font-size: 1rem;
-    transition: 500ms ease-in-out;
-    left: -240px;
-}
-
-.menu-lateral {
-    list-style: none;
-
-}
-
-.menu-lateral li {
-    margin-bottom: 1rem;
-    
-}
-
-.menu-lateral li a {
-    font-size: 0.7rem;
-}
-
-@media (max-width:600px){
-    .container-menu {
-        
-        justify-items: center;
-        align-items: center;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Dos columnas de igual tamaño */
-        grid-template-rows: repeat(3, 1fr); /* Tres filas de igual tamaño */
-        gap: 10px; /* Espacio entre elementos */
-    }
-
-    .opcion {
-        margin: 0rem;
-        padding: 0.5rem;
-        /* width: 15rem; */
-        width: 100px;
-        height: 100px;
-    }
-
-    .opcion a{
-        font-size: 1rem !important;
-    }
-
-    header .logo-ingles img {
-        width: 40px;
-       
-    }
-
-    header li a {
-        text-decoration: none;
-        color: white;
-        font-size: 0.7rem;
-    }
-
-    #burger .barra {
-        width: 1.5rem; 
-    }
-}
-
-#toggleBtn1, #toggleBtn3, #capturarBtn  {
+#toggleBtn1, #toggleBtn3, #capturarBtn, #sonarBtn  {
     height: 3rem;
     width: 3rem;
     border-radius: 5px;
@@ -223,7 +103,7 @@ header li a {
 
 
 
-#toggleBtn1.on, #toggleBtn3.on {
+#toggleBtn1.on, #toggleBtn3.on, #sonarBtn.on {
     background-color: mediumaquamarine;
 }
 
@@ -363,7 +243,8 @@ main {
   @media (max-width:720px){
     #toggleBtn1,
     #toggleBtn3, 
-    #capturarBtn,   
+    #capturarBtn,
+    #sonarBtn,  
     .leyenda-texto {
         font-size: 0.7rem;
     }

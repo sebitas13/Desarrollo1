@@ -38,6 +38,41 @@
             });
 
 
+            // ENCENDER APAGAR ALARMA
+            let alarmaState = false;
+            alarmaBtn.addEventListener('click', () => {
+                alarmaState = !alarmaState;
+                updateUI3();
+                console.log('Estado actualizado', alarmaState);
+                socket.emit('alarmaState', alarmaState);
+
+                // ctx.clearRect(0, 0, canvas.width, canvas.height);    
+               
+            });
+
+            const updateUI3 = () => {
+                if(alarmaState){
+                    alarmaBtn.classList.add('on');
+                    // canvas.setAttribute('style','display:flex');
+                    
+                }else{
+                    alarmaBtn.classList.remove('on'); 
+                    
+                }
+               
+                alarmaBtn.innerText = alarmaState ? 'ON' : 'OFF';
+            };
+
+            //Es necesario para que se actualice el boton en los otros usuarios
+            socket.on('alarmaState', state => {
+              
+                alarmaState = state;
+                updateUI3();
+                console.log('Estado alarma actualizado por otro usuario', state);
+            });
+
+
+
 
 
 
@@ -50,9 +85,6 @@
                 updateUI2();
                 console.log('Estado actualizado', notificacionState);
                 socket.emit('notificacionState', notificacionState);
-
-                // ctx.clearRect(0, 0, canvas.width, canvas.height);    
-               
             });
 
             const updateUI2 = () => {
@@ -124,7 +156,7 @@
                 try {
 
                 const response  = await fetch(`/api/usuarios/lectura-imagenes?page=${page}`,{ method : 'GET' });
-                    
+             
                 const {success,message,data,numDoc} = await response.json();
                 let imagenes = data[0];
                 numeroDocumentos = numDoc;
@@ -197,48 +229,48 @@
             let currentPage = 1; 
             let arreglo_imagenes = [];
             async function displayGalleryPage(pageNumber) {
-    try {
-        // Obtiene todos los documentos
-        const arreglo_imagenes = await getDataImagenes(pageNumber);
+                        try {
+                            // Obtiene todos los documentos
+                            const arreglo_imagenes = await getDataImagenes(pageNumber);
 
-        // Limpia el contenedor de la galería
-        galleryContainer.innerHTML = '';
+                            // Limpia el contenedor de la galería
+                            galleryContainer.innerHTML = '';
 
-        // Agrega las imágenes al contenedor de la galería
-        if(arreglo_imagenes){
-            arreglo_imagenes.forEach((imageData, index) => {
-            const imageUrl = `data:image/jpeg;base64,${imageData.pic}`;
-            const imgElement = document.createElement('img');
-            imgElement.src = imageUrl;
-            imgElement.alt = `Imagen ${index + 1}`; // Números de imagen comenzando desde 1
-            imgElement.classList.add('gallery-item'); 
-            
-            // Se establece un tamaño máximo para las imágenes
-            imgElement.style.maxWidth = '200px';
-            imgElement.style.maxHeight = '150px';
+                            // Agrega las imágenes al contenedor de la galería
+                            if(arreglo_imagenes){
+                                arreglo_imagenes.forEach((imageData, index) => {
+                                const imageUrl = `data:image/jpeg;base64,${imageData.pic}`;
+                                const imgElement = document.createElement('img');
+                                imgElement.src = imageUrl;
+                                imgElement.alt = `Imagen ${index + 1}`; // Números de imagen comenzando desde 1
+                                imgElement.classList.add('gallery-item'); 
+                                
+                                // Se establece un tamaño máximo para las imágenes
+                                imgElement.style.maxWidth = '200px';
+                                imgElement.style.maxHeight = '150px';
 
-            // Se crea un elemento para mostrar el tiempo
-            const timestampElement = document.createElement('span');
-            timestampElement.textContent = `Tiempo: ${new Date(imageData.tiempo).toLocaleString()}`;
-            timestampElement.classList.add('timestamp'); // Puedes agregar estilos CSS según sea necesario
+                                // Se crea un elemento para mostrar el tiempo
+                                const timestampElement = document.createElement('span');
+                                timestampElement.textContent = `Tiempo: ${new Date(imageData.tiempo).toLocaleString()}`;
+                                timestampElement.classList.add('timestamp'); // Puedes agregar estilos CSS según sea necesario
 
-            // Se crea un contenedor para la imagen y su marca de tiempo
-            const container = document.createElement('div');
-            container.classList.add('image-container');
-            container.appendChild(imgElement);
-            container.appendChild(timestampElement);
+                                // Se crea un contenedor para la imagen y su marca de tiempo
+                                const container = document.createElement('div');
+                                container.classList.add('image-container');
+                                container.appendChild(imgElement);
+                                container.appendChild(timestampElement);
 
-            galleryContainer.appendChild(container);
-        });
+                                galleryContainer.appendChild(container);
+                            });
 
-        }
-        currentPage = pageNumber;
+                            }
+                            currentPage = pageNumber;
 
-        updatePagination(numeroDocumentos)
-    } catch (error) {
-        console.error('Error al mostrar los documentos:', error);
-    }
-}
+                            updatePagination(numeroDocumentos)
+                        } catch (error) {
+                            console.error('Error al mostrar los documentos:', error);
+                        }
+                }
 
 
 function updatePagination(totalPages) {

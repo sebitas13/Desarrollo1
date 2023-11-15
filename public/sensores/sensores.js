@@ -17,31 +17,19 @@
       var label2
       
       socket.on('lecturas', (value)=> {
-
           console.log(value);
-
           const {
                   temp_c,
-                  temp_f,
+                  
                   hume,
                   s_ter,
                   ldr,
-                  pir,
+                  
                   Fecha} = JSON.parse(value);   //JSON.parse(value)
-
           temperatura = parseFloat(temp_c);
           termica = parseFloat(s_ter);
           humedad = parseFloat(hume);
           ldr_v =  parseFloat(ldr);
-          // temp_c.innerHTML= temp_c + ' °C';
-          // tempf.innerHTML = temp_f +' °F';
-          // hum.innerHTML = hume +' %';
-          // st.innerHTML = s_ter +' °';
-          // ld.innerHTML = ldr +' LUX';
-          // p.innerHTML = pir;
-          // f.innerHTML = Fecha;
-
-          //socket.emit('enviame',"otra");
           getDate(axisDataItemLdr);
           getDateHumedad(axisDataItemHume);
           getDateTempAndHume(axisDataItemTempAndHume1,axisDataItemTempAndHume2);

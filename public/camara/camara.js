@@ -74,6 +74,37 @@
                 console.log('Estado luz actualizado por otro usuario', state);
             });
 
+            // ENCENDER APAGAR SONAR
+            const sonarBtn = document.getElementById('sonarBtn');
+            let sonarState = false;
+            sonarBtn.addEventListener('click', () => {
+                sonarState = !sonarState;
+                updateUI4();
+                console.log('Estado iluminar: ', sonarState);
+                socket.emit('sonarState', sonarState);
+               
+            });
+
+            const updateUI4 = () => {
+                if(sonarState){
+                    sonarBtn.classList.add('on');
+                    
+                }else{
+                    sonarBtn.classList.remove('on'); 
+                }
+               
+                sonarBtn.innerText = sonarState ? 'ON' : 'OFF';
+            };
+
+            //Es necesario para que se actualice el boton en los otros usuarios
+            socket.on('sonarState', state => {
+              
+                sonarState = state;
+                updateUI4();
+                console.log('Estado luz actualizado por otro usuario', state);
+            });
+
+
             //ENCENDER LA LUZ EN LA OSCURIDAD
             
             // socket.on('lecturas', (value)=> {
@@ -104,36 +135,16 @@
             // ---------------------
            
             var img = new Image();  
-            img.onload = function() { //funcion  se ejecuta cuando la imagen se carga correctamente.
-
-                    //Se define el ancho y alto del elemento de lienzo (canvas) en base a las dimensiones de la imagen cargada(img)
+            img.onload = function() { 
                     canvas.style.width=this.width+'px'; 
                     canvas.style.height=this.height+'px'; 
-
-                    //Para dibujar la imagen cargada (img) en el lienzo. Los parámetros especifican la imagen de origen (coordenadas x e y, ancho y alto),
-                    // así como la ubicación y el tamaño en el lienzo donde se dibujará la imagen.
                     ctx.drawImage(this, 0, 0, this.width,this.height, 0, 0, canvas.width, canvas.height); 
-
-               
             }
             
-
             socket.on('stream_to_client', function(message) {
-                
-                // Se crea un objeto Blob a partir del contenido del mensaje. 
-                //El mensaje debe contener los datos binarios de la imagen en formato JPEG. 
-                //La opción type se establece en "image/jpeg" para indicar que el Blob contiene una imagen JPEG.
-
                 var blob = new Blob([message], {type: "image/jpeg"}); 
-
-                //Se crea una referencia al objeto URL, que es una interfaz proporcionada
-                // por los navegadores para crear y gestionar URL de objetos.
                 var domURL = self.URL || self.webkitURL || self;
-                //Se utiliza el objeto URL para crear una URL de objeto a partir del Blob creado anteriormente
                 url = domURL.createObjectURL(blob);
-
-                //Se establece la propiedad src de un elemento de imagen (img) con la URL generada. 
-                ///Esto carga la imagen en el elemento de imagen y la muestra en el navegador.
                 img.src = url;	
             });
 
@@ -147,7 +158,7 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
 
-            const intervalo = setInterval(apagarCamaraAutomaticamente, 120000);
+            const intervalo = setInterval(apagarCamaraAutomaticamente, 180000);
 
 
             //CAPTURAR IMAGENES EN EL CLIENTE - NAVEGADOR

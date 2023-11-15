@@ -14,19 +14,10 @@ const token = localStorage.getItem('token');
 // }
 
 socket.on('lecturas', (value)=> {
-    console.log(value);
-
-    const {
-            temp_c,
-
-            hume,
-            s_ter,
-            ldr,
-            pir,
-            Fecha_d} = JSON.parse(value);   //JSON.parse(value)
+    const { temp_c, hume, s_ter, ldr, Fecha_d} = JSON.parse(value); 
             var fecha = new Date(Fecha_d);
             var año = fecha.getFullYear();
-            var mes = fecha.getMonth() + 1; // Los meses comienzan desde 0, por lo que sumamos 1
+            var mes = fecha.getMonth() + 1; 
             var día = fecha.getDate();
             var horas = fecha.getHours();
             var minutos = fecha.getMinutes();

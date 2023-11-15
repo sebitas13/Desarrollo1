@@ -69,6 +69,8 @@ class Servidor {
         let estadoMonitoreo = false;
         let estadoIluminar = false;
         let estadoNotifiacion = false;
+        let estadoAlarma = false;
+        let estadoSonar = false;
         this.io.on('connection',(socket)=>{
 
             console.log(`Conectado con el cliente ${socket.id}`)
@@ -76,6 +78,8 @@ class Servidor {
             socket.emit('camaraState', estadoCamara); 
             socket.emit('monitoreoState', estadoMonitoreo);
             socket.emit('iluminarState', estadoIluminar);
+            socket.emit('alarmaState', estadoAlarma);
+            socket.emit('sonarState', estadoSonar);
             
             
             socket.on('disconnect',()=>{
@@ -112,9 +116,9 @@ class Servidor {
             });
 
             socket.on('monitoreoState', value => {
-                console.log('monitoreoState:', value);
                 estadoMonitoreo = value;
                 socket.broadcast.emit('monitoreoState', value);
+                console.log('monitoreoState:', value);
             });
 
             socket.on('iluminarState', value => {
@@ -127,6 +131,19 @@ class Servidor {
                 socket.broadcast.emit('notificacionState', value);
                 console.log('Estado notificacion',estadoNotifiacion);
             });
+
+            socket.on('alarmaState', value => {
+                estadoAlarma = value;
+                socket.broadcast.emit('alarmaState', value);
+                console.log('Estado alarma',estadoAlarma);
+            });
+
+            socket.on('sonarState', value => {
+                estadoSonar = value;
+                socket.broadcast.emit('sonarState', value);
+                console.log('Estado sonar',estadoSonar);
+            });
+
 
 
             //EVENTO DEL MONITOREO
@@ -150,7 +167,8 @@ class Servidor {
             
             socket.on('stream_event', function(msg){
                 //console.log("imagen recibida del esp32cam")
-                socket.broadcast.emit('stream_to_client',msg.pic)
+                socket.broadcast.emit('stream_to_client',msg.pic);
+                
             });
             
           
